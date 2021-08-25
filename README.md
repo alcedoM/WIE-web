@@ -4,21 +4,28 @@
 
 ### Members
 
-[@alcedoM](https://github.com/alcedoM) [@schrodingho](https://github.com/schrodingho)[@tusihan](https://github.com/tusihan)[@palpitate26](https://github.com/palpitate26)
+[@alcedoM](https://github.com/alcedoM)
+
+[@schrodingho](https://github.com/schrodingho)
+
+[@tusihan](https://github.com/tusihan)
+
+[@palpitate26](https://github.com/palpitate26)
 
 
 
-## 安装
+## Install
 
 克隆
 ```bash
 $ git clone https://github.com/alcedoM/WIE-web.git
 $ cd main/WIE
 ```
-创建虚拟环境
+安装虚拟环境(已安装请忽略)
 
 ```bash
 $ pip install pipenv
+# 可以通过 pipenv --version 检查是否安装
 ```
 
 安装依赖
@@ -32,11 +39,16 @@ $ pipenv install --dev
 $ pipenv install pillow
 ```
 
-生成虚拟数据并运行
+生成虚拟数据(第一次启动时需要)
+
+``` bash
+$ pipenv shell # 进入虚拟环境
+$ flask forge  # 生成虚拟数据
+```
+
+运行
 
 ```bash
-$ pipenv shell
-$ flask forge
 $ flask run
 * Running on http://127.0.0.1:5000/
 ```
@@ -44,4 +56,12 @@ $ flask run
 测试用管理员
 
 账号：admin@wie.com  密码：helloadmin
+
+
+
+## Update Log
+
+- 8.25 
+  - 前端：部分翻译，分数模块（部分）
+  - 后端：user数据库添加分数 
 
