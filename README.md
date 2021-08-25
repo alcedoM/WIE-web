@@ -40,3 +40,8 @@ $ flask forge
 $ flask run
 * Running on http://127.0.0.1:5000/
 ```
+
+测试用管理员
+
+账号：admin@wie.com  密码：helloadmin
+
