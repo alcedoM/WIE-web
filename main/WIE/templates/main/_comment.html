@@ -1,13 +1,13 @@
 <div class="comments" id="comments">
-    <h3>{{ photo.comments|length }} Comments
+    <h3>{{ photo.comments|length }} 条评论
         <small>
-            <a href="{{ url_for('.show_photo', photo_id=photo.id, page=pagination.pages or 1) }}#comment-form">latest</a>
+            <a href="{{ url_for('.show_photo', photo_id=photo.id, page=pagination.pages or 1) }}#comment-form">最新</a>
         </small>
         {% if current_user == photo.author %}
             <form class="inline" method="post" action="{{ url_for('.set_comment', photo_id=photo.id) }}">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <button type="submit" class="btn btn-xs btn-link float-right">
-                    {% if photo.can_comment %}Disable{% else %}Enable{% endif %} comment
+                    {% if photo.can_comment %}Disable{% else %}Enable{% endif %} 评论
                 </button>
             </form>
         {% endif %}
@@ -49,14 +49,14 @@
                                 {% if current_user != comment.author %}
                                     <a class="dropdown-item btn"
                                        href="{{ url_for('.reply_comment', comment_id=comment.id) }}">
-                                    <span class="oi oi-comment-square"></span> Reply
+                                    <span class="oi oi-comment-square"></span> 回复
                                 </a>
                                 {% endif %}
                                 {% if current_user == comment.author or current_user == photo.author or current_user.can('MODERATE') %}
                                     <a class="dropdown-item" data-toggle="modal" href="#!"
                                        data-href="{{ url_for('.delete_comment', comment_id=comment.id) }}"
                                        data-target="#confirm-delete">
-                                    <span class="oi oi-trash" aria-hidden="true"></span> Delete
+                                    <span class="oi oi-trash" aria-hidden="true"></span> 删除
                                   </a>
                                 {% endif %}
                                 {% if current_user != comment.author %}
@@ -64,7 +64,7 @@
                                       action="{{ url_for('.report_comment', comment_id=comment.id) }}">
                                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                     <button type="submit" class="dropdown-item">
-                                        <span class="oi oi-warning" aria-hidden="true"></span> Report
+                                        <span class="oi oi-warning" aria-hidden="true"></span> 举报
                                       </button>
                                 </form>
                                 {% endif %}
@@ -75,7 +75,7 @@
                     </h6>
                     <p>
                         {% if comment.replied %}
-                            Reply
+                            回复
                             <a href="{{ url_for('user.index', username=comment.replied.author.username) }}">{{ comment.replied.author.name }}</a>:
                         {% endif %}
                         {{ comment.body }}
@@ -88,7 +88,7 @@
             {{ render_pagination(pagination) }}
         </div>
     {% else %}
-        <p class="tip">No comments.</p>
+        <p class="tip">没有评论</p>
     {% endif %}
 
     {% if photo.can_comment %}
@@ -118,9 +118,9 @@
             {% endif %}
         {% else %}
             <p class="tip">
-                <a href="{{ url_for('auth.login') }}">Login</a>
+                <a href="{{ url_for('auth.login') }}">登录</a>
                 or
-                <a href="{{ url_for('auth.register') }}">Register</a> to leave a comment.
+                <a href="{{ url_for('auth.register') }}">注册</a> to leave a comment.
             </p>
         {% endif %}
     {% else %}

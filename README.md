@@ -55,7 +55,7 @@ $ flask run
 
 测试用管理员
 
-账号：admin@wie.com  密码：helloadmin
+账号：admin@helloflask.com  密码：helloflask
 
 
 

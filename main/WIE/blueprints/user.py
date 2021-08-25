@@ -21,11 +21,11 @@ from WIE.utils import generate_token, validate_token, redirect_back, flash_error
 user_bp = Blueprint('user', __name__)
 
 
-@user_bp.route('/<username>')
+@user_bp.route('/<username>/index')
 def index(username):
     user = User.query.filter_by(username=username).first_or_404()
     if user == current_user and user.locked:
-        flash('Your account is locked.', 'danger')
+        flash('你的账号被锁定.', 'danger')
 
     if user == current_user and not user.active:
         logout_user()
@@ -39,8 +39,11 @@ def index(username):
 @user_bp.route('/<username>/score')
 def show_score(username):
     user = User.query.filter_by(username=username).first_or_404()
-    score = user.score
-    return render_template('user/score.html', user=user, score = score)
+    score_acm = user.score_acm
+    score_datascience = user.score_datascience
+    score_web = user.score_web 
+    score_hardware= user.score_hardware 
+    return render_template('user/score.html', user=user, score_acm = score_acm, score_datascience = score_datascience, score_web = score_web, score_hardware= score_hardware )
 
 
 @user_bp.route('/<username>/collections')
@@ -114,7 +117,7 @@ def edit_profile():
         current_user.website = form.website.data
         current_user.location = form.location.data
         db.session.commit()
-        flash('Profile updated.', 'success')
+        flash('信息已更新.', 'success')
         return redirect(url_for('.index', username=current_user.username))
     form.name.data = current_user.name
     form.username.data = current_user.username
@@ -143,7 +146,7 @@ def upload_avatar():
         filename = avatars.save_avatar(image)
         current_user.avatar_raw = filename
         db.session.commit()
-        flash('Image uploaded, please crop.', 'success')
+        flash('图片已上传请裁剪.', 'success')
     flash_errors(form)
     return redirect(url_for('.change_avatar'))
 
@@ -163,7 +166,7 @@ def crop_avatar():
         current_user.avatar_m = filenames[1]
         current_user.avatar_l = filenames[2]
         db.session.commit()
-        flash('Avatar updated.', 'success')
+        flash('头像已上传.', 'success')
     flash_errors(form)
     return redirect(url_for('.change_avatar'))
 
@@ -176,10 +179,10 @@ def change_password():
         if current_user.validate_password(form.old_password.data):
             current_user.set_password(form.password.data)
             db.session.commit()
-            flash('Password updated.', 'success')
+            flash('密码已更改.', 'success')
             return redirect(url_for('.index', username=current_user.username))
         else:
-            flash('Old password is incorrect.', 'warning')
+            flash('旧密码错误.', 'warning')
     return render_template('user/settings/change_password.html', form=form)
 
 
@@ -190,7 +193,7 @@ def change_email_request():
     if form.validate_on_submit():
         token = generate_token(user=current_user, operation=Operations.CHANGE_EMAIL, new_email=form.email.data.lower())
         send_change_email_email(to=form.email.data, user=current_user, token=token)
-        flash('Confirm email sent, check your inbox.', 'info')
+        flash('前往邮箱，确认你的账号.', 'info')
         return redirect(url_for('.index', username=current_user.username))
     return render_template('user/settings/change_email.html', form=form)
 
@@ -199,7 +202,7 @@ def change_email_request():
 @login_required
 def change_email(token):
     if validate_token(user=current_user, token=token, operation=Operations.CHANGE_EMAIL):
-        flash('Email updated.', 'success')
+        flash('邮箱地址已更新.', 'success')
         return redirect(url_for('.index', username=current_user.username))
     else:
         flash('Invalid or expired token.', 'warning')
@@ -215,7 +218,7 @@ def notification_setting():
         current_user.receive_comment_notification = form.receive_comment_notification.data
         current_user.receive_follow_notification = form.receive_follow_notification.data
         db.session.commit()
-        flash('Notification settings updated.', 'success')
+        flash('消息设置成功.', 'success')
         return redirect(url_for('.index', username=current_user.username))
     form.receive_collect_notification.data = current_user.receive_collect_notification
     form.receive_comment_notification.data = current_user.receive_comment_notification
@@ -230,7 +233,7 @@ def privacy_setting():
     if form.validate_on_submit():
         current_user.public_collections = form.public_collections.data
         db.session.commit()
-        flash('Privacy settings updated.', 'success')
+        flash('隐私设置成功.', 'success')
         return redirect(url_for('.index', username=current_user.username))
     form.public_collections.data = current_user.public_collections
     return render_template('user/settings/edit_privacy.html', form=form)
@@ -243,6 +246,6 @@ def delete_account():
     if form.validate_on_submit():
         db.session.delete(current_user._get_current_object())
         db.session.commit()
-        flash('Your are free, goodbye!', 'success')
+        flash('你免费了，再见!', 'success')
         return redirect(url_for('main.index'))
     return render_template('user/settings/delete_account.html', form=form)

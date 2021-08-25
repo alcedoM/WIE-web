@@ -6,12 +6,12 @@
 {% block content %}
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            {{ render_breadcrumb_item('admin.index', 'Dashboard Home') }}
-            {{ render_breadcrumb_item('admin.manage_photo', 'Manage Photo') }}
+            {{ render_breadcrumb_item('admin.index', '控制台首页') }}
+            {{ render_breadcrumb_item('admin.manage_photo', '图片管理') }}
         </ol>
     </nav>
     <div class="page-header">
-        <h1>Photos
+        <h1>图片
             <small class="text-muted">{{ pagination.total }}</small>
             <span class="dropdown">
             <button class="btn btn-secondary btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown"
@@ -34,13 +34,13 @@
         <table class="table table-striped">
             <thead>
             <tr>
-                <th>Image</th>
-                <th>Description</th>
-                <th>Tag</th>
-                <th>Author</th>
-                <th>Reported</th>
-                <th>Date</th>
-                <th>Actions</th>
+                <th>图片</th>
+                <th>描述</th>
+                <th>标签</th>
+                <th>发布者</th>
+                <th>被举报情况</th>
+                <th>日期</th>
+                <th>处理</th>
             </tr>
             </thead>
             {% for photo in photos %}
@@ -76,7 +76,7 @@
                               action="{{ url_for('main.delete_photo', photo_id=photo.id, next=request.full_path) }}">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                             <button type="submit" class="btn btn-danger btn-sm"
-                                    onclick="return confirm('Are you sure?');">Delete
+                                    onclick="return confirm('Are you sure?');">删除
                             </button>
                         </form>
                     </td>
@@ -85,6 +85,6 @@
         </table>
         <div class="page-footer">{{ render_pagination(pagination) }}</div>
     {% else %}
-        <div class="tip"><h5>No photos.</h5></div>
+        <div class="tip"><h5>没有照片.</h5></div>
     {% endif %}
 {% endblock %}

@@ -12,14 +12,14 @@ from wtforms.validators import DataRequired, Optional, Length
 
 class DescriptionForm(FlaskForm):
     description = TextAreaField('描述', validators=[Optional(), Length(0, 500)])
-    submit = SubmitField()
+    submit = SubmitField('提交')
 
 
 class TagForm(FlaskForm):
     tag = StringField('添加标签(使用空格区分)', validators=[Optional(), Length(0, 64)])
-    submit = SubmitField()
+    submit = SubmitField('提交')
 
 
 class CommentForm(FlaskForm):
     body = TextAreaField('', validators=[DataRequired()])
-    submit = SubmitField()
+    submit = SubmitField('提交')

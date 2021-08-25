@@ -97,7 +97,11 @@ class User(db.Model, UserMixin):
     avatar_m = db.Column(db.String(64))
     avatar_l = db.Column(db.String(64))
     avatar_raw = db.Column(db.String(64))
-    score = db.Column(db.Integer, default=0)
+    # score
+    score_acm = db.Column(db.Integer, default = 0)
+    score_datascience = db.Column(db.Integer, default = 0)
+    score_web = db.Column(db.Integer, default = 0)
+    score_hardware = db.Column(db.Integer, default = 0)
 
     confirmed = db.Column(db.Boolean, default=False)
     locked = db.Column(db.Boolean, default=False)

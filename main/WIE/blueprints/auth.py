@@ -28,12 +28,12 @@ def login():
         user = User.query.filter_by(email=form.email.data.lower()).first()
         if user is not None and user.validate_password(form.password.data):
             if login_user(user, form.remember_me.data):
-                flash('Login success.', 'info')
+                flash('登录成功.', 'info')
                 return redirect_back()
             else:
-                flash('Your account is blocked.', 'warning')
+                flash('你的账号被block了.', 'warning')
                 return redirect(url_for('main.index'))
-        flash('Invalid email or password.', 'warning')
+        flash('错误的邮箱或密码', 'warning')
     return render_template('auth/login.html', form=form)
 
 
@@ -54,7 +54,7 @@ def re_authenticate():
 @login_required
 def logout():
     logout_user()
-    flash('Logout success.', 'info')
+    flash('登出成功.', 'info')
     return redirect(url_for('main.index'))
 
 
@@ -75,7 +75,7 @@ def register():
         db.session.commit()
         token = generate_token(user=user, operation='confirm')
         send_confirm_email(user=user, token=token)
-        flash('Confirm email sent, check your inbox.', 'info')
+        flash('确认邮件已经发送，请前往邮箱查看.', 'info')
         return redirect(url_for('.login'))
     return render_template('auth/register.html', form=form)
 
@@ -87,7 +87,7 @@ def confirm(token):
         return redirect(url_for('main.index'))
 
     if validate_token(user=current_user, token=token, operation=Operations.CONFIRM):
-        flash('Account confirmed.', 'success')
+        flash('账号已确认.', 'success')
         return redirect(url_for('main.index'))
     else:
         flash('Invalid or expired token.', 'danger')
@@ -102,7 +102,7 @@ def resend_confirm_email():
 
     token = generate_token(user=current_user, operation=Operations.CONFIRM)
     send_confirm_email(user=current_user, token=token)
-    flash('New email sent, check your inbox.', 'info')
+    flash('新的邮件已发送，请前往邮箱查看.', 'info')
     return redirect(url_for('main.index'))
 
 
@@ -117,9 +117,9 @@ def forget_password():
         if user:
             token = generate_token(user=user, operation=Operations.RESET_PASSWORD)
             send_reset_password_email(user=user, token=token)
-            flash('Password reset email sent, check your inbox.', 'info')
+            flash('密码重置邮件已发送，请前往邮箱查看.', 'info')
             return redirect(url_for('.login'))
-        flash('Invalid email.', 'warning')
+        flash('该账号不存在.', 'warning')
         return redirect(url_for('.forget_password'))
     return render_template('auth/reset_password.html', form=form)
 
@@ -136,7 +136,7 @@ def reset_password(token):
             return redirect(url_for('main.index'))
         if validate_token(user=user, token=token, operation=Operations.RESET_PASSWORD,
                           new_password=form.password.data):
-            flash('Password updated.', 'success')
+            flash('密码修改成功', 'success')
             return redirect(url_for('.login'))
         else:
             flash('Invalid or expired link.', 'danger')

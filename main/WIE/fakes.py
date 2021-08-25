@@ -20,14 +20,14 @@ fake = Faker()
 
 
 def fake_admin():
-    admin = User(name='WIEadmin',
-                 username='WIEadmin',
-                 email='admin@wie.com',
+    admin = User(name='Grey Li',
+                 username='greyli',
+                 email='admin@helloflask.com',
                  bio=fake.sentence(),
-                 website='http://WIE.com',
+                 website='http://greyli.com',
                  confirmed=True)
-    admin.set_password('helloadmin')
-    notification = Notification(message='Hello, welcome to WIE.', receiver=admin)
+    admin.set_password('helloflask')
+    notification = Notification(message='Hello, welcome to Albumy.', receiver=admin)
     db.session.add(notification)
     db.session.add(admin)
     db.session.commit()
@@ -46,7 +46,7 @@ def fake_user(count=10):
         user.set_password('123456')
         db.session.add(user)
         try:
-            db.session.commit()
+            db.session.commit() 
         except IntegrityError:
             db.session.rollback()
 

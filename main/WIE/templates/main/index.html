@@ -47,20 +47,20 @@
                                      btn btn-outline-secondary btn-sm uncollect-btn"
                                             data-href="{{ url_for('ajax.uncollect', photo_id=photo.id) }}"
                                             data-id="{{ photo.id }}">
-                                        <span class="oi oi-x"></span> Uncollect
+                                        <span class="oi oi-x"></span> 取消收藏
                                     </button>
                                     <button class="{% if current_user.is_collecting(photo) %}hide{% endif %}
                                      btn btn-outline-primary btn-sm collect-btn"
                                             data-href="{{ url_for('ajax.collect', photo_id=photo.id) }}"
                                             data-id="{{ photo.id }}">
-                                        <span class="oi oi-star"></span> Collect
+                                        <span class="oi oi-star"></span> 收藏
                                     </button>
                                 {% else %}
                                     <form class="inline" method="post"
                                           action="{{ url_for('main.collect', photo_id=photo.id) }}">
                                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                         <button type="submit" class="btn btn-outline-primary btn-sm">
-                                            <span class="oi oi-star"></span> Collect
+                                            <span class="oi oi-star"></span> 收藏
                                         </button>
                                     </form>
                                 {% endif %}
@@ -73,8 +73,8 @@
                 {% endfor %}
             {% else %}
                 <div class="tip text-center">
-                    <h3>No trends.</h3>
-                    <p><a href="{{ url_for('.explore') }}">Explore</a></p>
+                    <h3>没有信息</h3>
+                    <p><a href="{{ url_for('.explore') }}">探索</a></p>
                 </div>
             {% endif %}
         </div>

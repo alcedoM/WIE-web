@@ -14,7 +14,7 @@
             <small class="text-muted">{{ user.username }}</small>
         </h1>
         <h3>
-            分数：{{ user.score }}
+            分数：{{ user.score_acm + user.score_datascience + user.score_web + user.score_hardware }}
         </h3>
         {% if user.bio %}<p>{{ user.bio }}</p>{% endif %}
         <p>
@@ -36,12 +36,12 @@
                     {% if user.locked %}
                         <form class="inline" action="{{ url_for('admin.unlock_user', user_id=user.id) }}" method="post">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                            <input type="submit" class="btn btn-secondary btn-sm" value="Unlock">
+                            <input type="submit" class="btn btn-secondary btn-sm" value="解除锁定">
                         </form>
                     {% else %}
                         <form class="inline" action="{{ url_for('admin.lock_user', user_id=user.id) }}" method="post">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                            <input type="submit" class="btn btn-warning btn-sm" value="Lock">
+                            <input type="submit" class="btn btn-warning btn-sm" value="锁定">
                         </form>
                     {% endif %}
                     {% if user.active %}
@@ -56,18 +56,17 @@
                             <input type="submit" class="btn btn-secondary btn-sm" value="Unblock">
                         </form>
                     {% endif %}
-                    <a class="btn btn-light btn-sm" href="mailto:{{ user.email }}">Email</a>
+                    <a class="btn btn-light btn-sm" href="mailto:{{ user.email }}">发送邮件</a>
                 {% endif %}
 
                 {% if current_user.is_admin %}
-                    <a class="btn btn-warning btn-sm" href="{{ url_for('admin.edit_profile_admin', user_id=user.id) }}">Edit
-                        profile</a>
+                    <a class="btn btn-warning btn-sm" href="{{ url_for('admin.edit_profile_admin', user_id=user.id) }}">修改信息</a>
                 {% endif %}
             {% endif %}
             <div class="float-right">
                 {{ follow_area(user) }}
                 {% if current_user.is_authenticated and user == current_user %}
-                    <a class="btn btn-outline-primary btn-sm" href="{{ url_for('.edit_profile') }}">Edit profile</a>
+                    <a class="btn btn-outline-primary btn-sm" href="{{ url_for('.edit_profile') }}">修改信息</a>
                 {% endif %}
             </div>
         </div>
@@ -75,8 +74,10 @@
 </div>
 <div class="user-nav">
     <ul class="nav nav-tabs">
-        {{ render_nav_item('user.index', 'Photo', user.photos|length, username=user.username) }}
-        {{ render_nav_item('user.show_score', '分数', user.score, username=user.username) }}
+        {{ render_nav_item('user.show_score', '分数', username=user.username) }}
+        {% if current_user.can('MODERATE') %}
+            {{ render_nav_item('user.index', '文章', user.photos|length, username=user.username) }}
+        {% endif %}
         {{ render_nav_item('user.show_collections', '收藏', user.collections|length, username=user.username) }}
         {{ render_nav_item('user.show_following', '关注', user.following.count() - 1, username=user.username) }}
         {{ render_nav_item('user.show_followers', '关注者', user.followers.count() - 1, username=user.username) }}

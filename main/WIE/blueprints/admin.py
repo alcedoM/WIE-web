@@ -55,7 +55,7 @@ def edit_profile_admin(user_id):
         user.username = form.username.data
         user.email = form.email.data
         db.session.commit()
-        flash('Profile updated.', 'success')
+        flash('信息已更新.', 'success')
         return redirect_back()
     form.name.data = user.name
     form.role.data = user.role_id
@@ -101,7 +101,7 @@ def lock_user(user_id):
         flash('Permission denied.', 'warning')
     else:
         user.lock()
-        flash('Account locked.', 'info')
+        flash('账号已锁定.', 'info')
     return redirect_back()
 
 
@@ -111,7 +111,7 @@ def lock_user(user_id):
 def unlock_user(user_id):
     user = User.query.get_or_404(user_id)
     user.unlock()
-    flash('Lock canceled.', 'info')
+    flash('锁定已取消.', 'info')
     return redirect_back()
 
 
@@ -122,7 +122,7 @@ def delete_tag(tag_id):
     tag = Tag.query.get_or_404(tag_id)
     db.session.delete(tag)
     db.session.commit()
-    flash('Tag deleted.', 'info')
+    flash('标签已删除.', 'info')
     return redirect_back()
 
 

@@ -48,9 +48,12 @@
                               class="{% if notification_count == 0 %}hide{% endif %} badge badge-danger badge-notification"
                               data-href="{{ url_for('ajax.notifications_count') }}">{{ notification_count }}</span>
                     </a>
+
+                    {% if current_user.can('MODERATE') %}
                     <a class="nav-item nav-link" href="{{ url_for('main.upload') }}" title="Upload">
                         <span class="oi oi-cloud-upload"></span>&nbsp;&nbsp;
                     </a>
+                    {% endif %}
                     <div class="dropdown nav-item">
                         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button"
                            aria-expanded="false">
@@ -59,8 +62,8 @@
                             <span class="caret"></span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right" role="menu">
-                            <h6 class="dropdown-header">以{{ current_user.username }}登入</h6>
-                            <a class="dropdown-item" href="{{ url_for('user.index', username=current_user.username) }}">
+                            <h6 class="dropdown-header">以{{ current_user.username }}的身份登入</h6>
+                            <a class="dropdown-item" href="{{ url_for('user.show_score', username=current_user.username) }}">
                                 <span class="oi oi-person"></span> 我的主页
                             </a>
                             <div class="dropdown-divider"></div>
@@ -69,7 +72,7 @@
                             </a>
                             {% if current_user.can('MODERATE') %}
                                 <a class="dropdown-item" href="{{ url_for('admin.index') }}">
-                                    <span class="oi oi-dashboard"></span> Dashboard
+                                    <span class="oi oi-dashboard"></span> 控制台
                                 </a>
                             {% endif %}
                             <a class="dropdown-item" href="{{ url_for('auth.logout') }}">
@@ -99,10 +102,8 @@
         {% block footer %}
             <footer>
                 <p class="float-left">
-                    <small>&copy; 2018
-                        <a href="http://greyli.com" title="Written by Grey Li">Grey Li</a> -
-                        <a href="https://github.com/greyli/albumy" title="Fork me on GitHub">GitHub</a> -
-                        <a href="http://helloflask.com" title="A HelloFlask project">HelloFlask</a>
+                    <small>&copy; 2021
+                        <a href="http://WIE.com">WIE</a> 
                     </small>
                 </p>
                 <p class="float-right">

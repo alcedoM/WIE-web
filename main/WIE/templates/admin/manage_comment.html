@@ -6,12 +6,12 @@
 {% block content %}
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            {{ render_breadcrumb_item('admin.index', 'Dashboard Home') }}
-            {{ render_breadcrumb_item('admin.manage_comment', 'Manage Comment') }}
+            {{ render_breadcrumb_item('admin.index', '控制台首页') }}
+            {{ render_breadcrumb_item('admin.manage_comment', '评论管理') }}
         </ol>
     </nav>
     <div class="page-header">
-        <h1>Comments
+        <h1>评论
             <small class="text-muted">{{ pagination.total }}</small>
             <span class="dropdown">
             <button class="btn btn-secondary btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown"
@@ -34,12 +34,12 @@
         <table class="table table-striped">
             <thead>
             <tr>
-                <th>Body</th>
-                <th>Author</th>
-                <th>Image</th>
-                <th>Reported</th>
-                <th>Date</th>
-                <th>Actions</th>
+                <th>评论内容</th>
+                <th>发布者</th>
+                <th>图片</th>
+                <th>被举报情况</th>
+                <th>日期</th>
+                <th>处理</th>
             </tr>
             </thead>
             {% for comment in comments %}
@@ -49,7 +49,7 @@
                         <a href="{{ url_for('user.index', username=comment.author.username) }}">{{ comment.author.name }}</a>
                     </td>
                     <td>
-                        <a href="{{ url_for('main.show_photo', photo_id=comment.photo.id) }}">Photo {{ comment.photo.id }}</a>
+                        <a href="{{ url_for('main.show_photo', photo_id=comment.photo.id) }}">图片 {{ comment.photo.id }}</a>
                     </td>
                     <td>{{ comment.flag }}</td>
                     <td>{{ moment(comment.timestamp).format('LL') }}</td>
@@ -58,7 +58,7 @@
                               action="{{ url_for('main.delete_comment', comment_id=comment.id, next=request.full_path) }}">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                             <button type="submit" class="btn btn-danger btn-sm"
-                                    onclick="return confirm('Are you sure?');">Delete
+                                    onclick="return confirm('Are you sure?');">删除
                             </button>
                         </form>
                     </td>
@@ -67,6 +67,6 @@
         </table>
         <div class="page-footer">{{ render_pagination(pagination) }}</div>
     {% else %}
-        <div class="tip"><h5>No comments.</h5></div>
+        <div class="tip"><h5>没有评论.</h5></div>
     {% endif %}
 {% endblock %}

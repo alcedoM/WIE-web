@@ -21,7 +21,7 @@ class EditProfileForm(FlaskForm):
                                                           message='用户名只能包含字母和数字.')])
     website = StringField('个人网站', validators=[Optional(), Length(0, 255)])
     location = StringField('城市', validators=[Optional(), Length(0, 50)])
-    bio = TextAreaField('Bio', validators=[Optional(), Length(0, 120)])
+    bio = TextAreaField('个性签名', validators=[Optional(), Length(0, 120)])
     submit = SubmitField('提交')
 
     def validate_username(self, field):
@@ -34,7 +34,7 @@ class UploadAvatarForm(FlaskForm):
         FileRequired(),
         FileAllowed(['jpg', 'png'], '文件格式应该为 .jpg 或 .png.')
     ])
-    submit = SubmitField()
+    submit = SubmitField('上传')
 
 
 class CropAvatarForm(FlaskForm):
@@ -47,7 +47,7 @@ class CropAvatarForm(FlaskForm):
 
 class ChangeEmailForm(FlaskForm):
     email = StringField('新邮箱', validators=[DataRequired(), Length(1, 254), Email()])
-    submit = SubmitField()
+    submit = SubmitField('提交')
 
     def validate_email(self, field):
         if User.query.filter_by(email=field.data.lower()).first():
@@ -59,24 +59,24 @@ class ChangePasswordForm(FlaskForm):
     password = PasswordField('新密码', validators=[
         DataRequired(), Length(8, 128), EqualTo('password2')])
     password2 = PasswordField('确认密码', validators=[DataRequired()])
-    submit = SubmitField()
+    submit = SubmitField('提交')
 
 
 class NotificationSettingForm(FlaskForm):
     receive_comment_notification = BooleanField('新评论')
     receive_follow_notification = BooleanField('新关注者')
-    receive_collect_notification = BooleanField('New collector')
-    submit = SubmitField()
+    receive_collect_notification = BooleanField('新收藏者')
+    submit = SubmitField('确认')
 
 
 class PrivacySettingForm(FlaskForm):
     public_collections = BooleanField('公开我的收藏')
-    submit = SubmitField()
+    submit = SubmitField('确认')
 
 
 class DeleteAccountForm(FlaskForm):
     username = StringField('用户名', validators=[DataRequired(), Length(1, 20)])
-    submit = SubmitField()
+    submit = SubmitField('删除')
 
     def validate_username(self, field):
         if field.data != current_user.username:
