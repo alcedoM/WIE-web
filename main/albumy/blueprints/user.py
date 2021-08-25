@@ -36,6 +36,12 @@ def index(username):
     photos = pagination.items
     return render_template('user/index.html', user=user, pagination=pagination, photos=photos)
 
+@user_bp.route('/<username>/score')
+def show_score(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    score = user.score
+    return render_template('user/score.html', user=user, score = score)
+
 
 @user_bp.route('/<username>/collections')
 def show_collections(username):

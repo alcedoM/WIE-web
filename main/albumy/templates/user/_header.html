@@ -13,6 +13,9 @@
         <h1>{{ user.name }}
             <small class="text-muted">{{ user.username }}</small>
         </h1>
+        <h3>
+            分数：{{ user.score }}
+        </h3>
         {% if user.bio %}<p>{{ user.bio }}</p>{% endif %}
         <p>
             {% if user.website %}
@@ -73,8 +76,9 @@
 <div class="user-nav">
     <ul class="nav nav-tabs">
         {{ render_nav_item('user.index', 'Photo', user.photos|length, username=user.username) }}
-        {{ render_nav_item('user.show_collections', 'Collections', user.collections|length, username=user.username) }}
-        {{ render_nav_item('user.show_following', 'Following', user.following.count() - 1, username=user.username) }}
-        {{ render_nav_item('user.show_followers', 'Follower', user.followers.count() - 1, username=user.username) }}
+        {{ render_nav_item('user.show_score', '分数', user.score, username=user.username) }}
+        {{ render_nav_item('user.show_collections', '收藏', user.collections|length, username=user.username) }}
+        {{ render_nav_item('user.show_following', '关注', user.following.count() - 1, username=user.username) }}
+        {{ render_nav_item('user.show_followers', '关注者', user.followers.count() - 1, username=user.username) }}
     </ul>
 </div>

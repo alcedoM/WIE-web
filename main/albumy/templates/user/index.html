@@ -14,11 +14,11 @@
                 {% endfor %}
             {% else %}
                 <div class="tip text-center">
-                    <h3>No photos.</h3>
+                    <h3>空空如也.</h3>
                     {% if user == current_user %}
-                        <a class="btn btn-link" href="{{ url_for('main.upload') }}">Upload</a>
+                        <a class="btn btn-link" href="{{ url_for('main.upload') }}">上传</a>
                     {% else %}
-                        <a class="btn btn-link" href="{{ url_for('main.explore') }}">Explore</a>
+                        <a class="btn btn-link" href="{{ url_for('main.explore') }}">探索</a>
                     {% endif %}
                 </div>
             {% endif %}

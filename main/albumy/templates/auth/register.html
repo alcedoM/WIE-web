@@ -7,15 +7,15 @@
     <div class="jumbotron">
         <div class="row">
             <div class="col-md-8">
-                <img src="{{ url_for('static', filename='images/index.jpg') }}" class="rounded img-fluid">
+                <img src="{{ url_for('static', filename='images/pic1.jpg') }}" class="rounded img-fluid">
             </div>
             <div class="col-md-4">
                 <div class="card mb-3 w-100 bg-light">
-                    <div class="card-header"><h4>Welcome to Albumy!</h4></div>
+                    <div class="card-header"><h4>欢迎来到创新创业工作坊!</h4></div>
                     <div class="card-body">
                         {{ render_form(form) }}
                         <hr>
-                        <small>Already have an account? <a href="{{ url_for('.login') }}">Click here to log in.</a>
+                        <small>已有账号? <a href="{{ url_for('.login') }}">点此登录.</a>
                         </small>
                     </div>
                 </div>

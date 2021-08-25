@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/pagination.html' import render_pagination %}
+
+{% block title %}{{ user.name }}{% endblock %}
+
+{% block content %}
+    {% include 'user/_header.html' %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="tip text-center">
+                <h3>分数{{ user.score }}</h3>
+            </div>
+        </div>
+    </div>
+{% endblock %}
