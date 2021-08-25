@@ -8,8 +8,8 @@
 from flask import render_template, jsonify, Blueprint
 from flask_login import current_user
 
-from albumy.models import User, Photo, Notification
-from albumy.notifications import push_collect_notification, push_follow_notification
+from WIE.models import User, Photo, Notification
+from WIE.notifications import push_collect_notification, push_follow_notification
 
 ajax_bp = Blueprint('ajax', __name__)
 

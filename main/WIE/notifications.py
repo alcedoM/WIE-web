@@ -7,8 +7,8 @@
 """
 from flask import url_for
 
-from albumy.extensions import db
-from albumy.models import Notification
+from WIE.extensions import db
+from WIE.models import Notification
 
 
 def push_follow_notification(follower, receiver):

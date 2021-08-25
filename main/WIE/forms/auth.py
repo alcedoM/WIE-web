@@ -10,7 +10,7 @@ from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms import ValidationError
 from wtforms.validators import DataRequired, Length, Email, EqualTo, Regexp
 
-from albumy.models import User
+from WIE.models import User
 
 
 class LoginForm(FlaskForm):

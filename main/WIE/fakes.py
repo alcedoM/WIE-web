@@ -13,8 +13,8 @@ from faker import Faker
 from flask import current_app
 from sqlalchemy.exc import IntegrityError
 
-from albumy.extensions import db
-from albumy.models import User, Photo, Tag, Comment, Notification
+from WIE.extensions import db
+from WIE.models import User, Photo, Tag, Comment, Notification
 
 fake = Faker()
 

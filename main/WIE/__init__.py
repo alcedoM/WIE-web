@@ -12,21 +12,21 @@ from flask import Flask, render_template
 from flask_login import current_user
 from flask_wtf.csrf import CSRFError
 
-from albumy.blueprints.admin import admin_bp
-from albumy.blueprints.ajax import ajax_bp
-from albumy.blueprints.auth import auth_bp
-from albumy.blueprints.main import main_bp
-from albumy.blueprints.user import user_bp
-from albumy.extensions import bootstrap, db, login_manager, mail, dropzone, moment, whooshee, avatars, csrf
-from albumy.models import Role, User, Photo, Tag, Follow, Notification, Comment, Collect, Permission
-from albumy.settings import config
+from WIE.blueprints.admin import admin_bp
+from WIE.blueprints.ajax import ajax_bp
+from WIE.blueprints.auth import auth_bp
+from WIE.blueprints.main import main_bp
+from WIE.blueprints.user import user_bp
+from WIE.extensions import bootstrap, db, login_manager, mail, dropzone, moment, whooshee, avatars, csrf
+from WIE.models import Role, User, Photo, Tag, Follow, Notification, Comment, Collect, Permission
+from WIE.settings import config
 
 
 def create_app(config_name=None):
     if config_name is None:
         config_name = os.getenv('FLASK_CONFIG', 'development')
 
-    app = Flask('albumy')
+    app = Flask('WIE')
     
     app.config.from_object(config[config_name])
     app.config['DEBUG'] = True
@@ -119,7 +119,7 @@ def register_commands(app):
 
     @app.cli.command()
     def init():
-        """Initialize Albumy."""
+        """Initialize WIE-web."""
         click.echo('Initializing the database...')
         db.create_all()
 
@@ -138,7 +138,7 @@ def register_commands(app):
     def forge(user, follow, photo, tag, collect, comment):
         """Generate fake data."""
 
-        from albumy.fakes import fake_admin, fake_comment, fake_follow, fake_photo, fake_tag, fake_user, fake_collect
+        from WIE.fakes import fake_admin, fake_comment, fake_follow, fake_photo, fake_tag, fake_user, fake_collect
 
         db.drop_all()
         db.create_all()

@@ -13,7 +13,7 @@ from flask_avatars import Identicon
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from albumy.extensions import db, whooshee
+from WIE.extensions import db, whooshee
 
 # relationship table
 roles_permissions = db.Table('roles_permissions',

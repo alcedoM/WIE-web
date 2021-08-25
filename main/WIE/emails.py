@@ -10,7 +10,7 @@ from threading import Thread
 from flask import current_app, render_template
 from flask_mail import Message
 
-from albumy.extensions import mail
+from WIE.extensions import mail
 
 
 def _send_async_mail(app, message):

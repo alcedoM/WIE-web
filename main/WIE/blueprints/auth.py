@@ -8,12 +8,12 @@
 from flask import render_template, flash, redirect, url_for, Blueprint
 from flask_login import login_user, logout_user, login_required, current_user, login_fresh, confirm_login
 
-from albumy.emails import send_confirm_email, send_reset_password_email
-from albumy.extensions import db
-from albumy.forms.auth import LoginForm, RegisterForm, ForgetPasswordForm, ResetPasswordForm
-from albumy.models import User
-from albumy.settings import Operations
-from albumy.utils import generate_token, validate_token, redirect_back
+from WIE.emails import send_confirm_email, send_reset_password_email
+from WIE.extensions import db
+from WIE.forms.auth import LoginForm, RegisterForm, ForgetPasswordForm, ResetPasswordForm
+from WIE.models import User
+from WIE.settings import Operations
+from WIE.utils import generate_token, validate_token, redirect_back
 
 auth_bp = Blueprint('auth', __name__)
 

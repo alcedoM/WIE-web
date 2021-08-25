@@ -1,2 +1,2 @@
-FLASK_APP=albumy
+FLASK_APP=WIE
 FLASK_ENV=development
