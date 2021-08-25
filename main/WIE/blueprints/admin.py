@@ -54,6 +54,10 @@ def edit_profile_admin(user_id):
         user.location = form.location.data
         user.username = form.username.data
         user.email = form.email.data
+        user.score_acm=form.acm_score.data
+        user.score_datascience=form.ds_score.data
+        user.score_web=form.web_score.data
+        user.score_hardware=form.hw_score.data
         db.session.commit()
         flash('信息已更新.', 'success')
         return redirect_back()
@@ -66,6 +70,10 @@ def edit_profile_admin(user_id):
     form.email.data = user.email
     form.confirmed.data = user.confirmed
     form.active.data = user.active
+    form.acm_score.data = user.score_acm
+    form.ds_score.data = user.score_datascience
+    form.web_score.data = user.score_web
+    form.hw_score.data = user.score_hardware
     return render_template('admin/edit_profile.html', form=form, user=user)
 
 

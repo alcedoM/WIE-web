@@ -5,20 +5,24 @@
     :copyright: © 2018 Grey Li <withlihui@gmail.com>
     :license: MIT, see LICENSE for more details.
 """
-from wtforms import StringField, SelectField, BooleanField, SubmitField
+from wtforms import StringField, SelectField, BooleanField, SubmitField, IntegerField
 from wtforms import ValidationError
 from wtforms.validators import DataRequired, Length, Email
 
 from WIE.forms.user import EditProfileForm
 from WIE.models import User, Role
 
-
 class EditProfileAdminForm(EditProfileForm):
     email = StringField('Email', validators=[DataRequired(), Length(1, 254), Email()])
     role = SelectField('Role', coerce=int)
+    acm_score = IntegerField('ACM分数')
+    ds_score = IntegerField('数据科学分数')
+    web_score = IntegerField('WEB分数')
+    hw_score = IntegerField('硬件分数')
     active = BooleanField('Active')
     confirmed = BooleanField('Confirmed')
     submit = SubmitField()
+
 
     def __init__(self, user, *args, **kwargs):
         super(EditProfileAdminForm, self).__init__(*args, **kwargs)
