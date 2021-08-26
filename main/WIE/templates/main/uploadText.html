@@ -11,13 +11,16 @@
 
 {% block content %}
     <div class="page-header">
-        <h1>上传</h1>
+        <h1>发文章</h1>
     </div>
     <div class="row">
-        <a href="{{ url_for('main.upload_photo', username=current_user.username) }}" class="btn btn-outline-primary btn-lg btn-block" role="button" aria-pressed="true">发图片</a>
+        <div class="col-md-12">
+            {{ render_form(form) }}
+            <a class="btn btn-light float-right" href="{{ url_for('user.index', username=current_user.username) }}">
+                返回首页
+            </a>
 
-        <a href="{{ url_for('main.upload_article', username=current_user.username) }}" class="btn btn-outline-primary btn-lg btn-block" role="button" aria-pressed="true">发文章</a>
-
+        </div>
     </div>
 {% endblock %}
 

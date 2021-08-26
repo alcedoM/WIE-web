@@ -11,7 +11,7 @@ from flask_login import login_required
 from WIE.decorators import admin_required, permission_required
 from WIE.extensions import db
 from WIE.forms.admin import EditProfileAdminForm
-from WIE.models import Role, User, Tag, Photo, Comment
+from WIE.models import Role, User, Tag, Photo, Comment, Article
 from WIE.utils import redirect_back
 
 admin_bp = Blueprint('admin', __name__)
@@ -25,6 +25,7 @@ def index():
     locked_user_count = User.query.filter_by(locked=True).count()
     blocked_user_count = User.query.filter_by(active=False).count()
     photo_count = Photo.query.count()
+    article_count = Article.query.count()
     reported_photos_count = Photo.query.filter(Photo.flag > 0).count()
     tag_count = Tag.query.count()
     comment_count = Comment.query.count()
@@ -32,7 +33,7 @@ def index():
     return render_template('admin/index.html', user_count=user_count, photo_count=photo_count,
                            tag_count=tag_count, comment_count=comment_count, locked_user_count=locked_user_count,
                            blocked_user_count=blocked_user_count, reported_comments_count=reported_comments_count,
-                           reported_photos_count=reported_photos_count)
+                           reported_photos_count=reported_photos_count, article_count=article_count)
 
 
 @admin_bp.route('/profile/<int:user_id>', methods=['GET', 'POST'])
@@ -175,6 +176,23 @@ def manage_photo(order):
         pagination = Photo.query.order_by(Photo.flag.desc()).paginate(page, per_page)
     photos = pagination.items
     return render_template('admin/manage_photo.html', pagination=pagination, photos=photos, order_rule=order_rule)
+
+@admin_bp.route('/manage/article', defaults={'order': 'by_flag'})
+@admin_bp.route('/manage/article/<order>')
+@login_required
+@permission_required('MODERATE')
+def manage_article(order):
+    page = request.args.get('page', 1, type=int)
+    per_page = current_app.config['ALBUMY_MANAGE_ARTICLE_PER_PAGE']
+    order_rule = 'flag'
+    if order == 'by_time':
+        pagination = Article.query.order_by(Article.timestamp.desc()).paginate(page, per_page)
+        order_rule = 'time'
+    else:
+        pagination = Article.query.order_by(Article.flag.desc()).paginate(page, per_page)
+    articles = pagination.items
+    return render_template('admin/manage_article.html', pagination=pagination, articles=articles, order_rule=order_rule)
+
 
 
 @admin_bp.route('/manage/tag')

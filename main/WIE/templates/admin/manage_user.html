@@ -46,8 +46,8 @@
             <tr>
                 <th>头像</th>
                 <th>姓名/用户名</th>
+                <th>学号</th>
                 <th>角色</th>
-                <th>个性签名</th>
                 <th>城市</th>
                 <th>日期</th>
                 <th>图片</th>
@@ -58,8 +58,8 @@
                 <tr>
                     <td><img src="{{ url_for('main.get_avatar', filename=user.avatar_s) }}"></td>
                     <td>{{ user.name }}<br>{{ user.username }}</td>
+                    <th>{{ user.studentid }}</th>
                     <td>{{ user.role.name }}</td>
-                    <td>{{ user.bio }}</td>
                     <td>{{ user.location }}</td>
                     <td>{{ moment(user.member_since).format('LL') }}</td>
                     <td>

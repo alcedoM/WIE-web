@@ -73,16 +73,12 @@
             </div>
         </div>
         <div class="col-md-6">
-            <div class="card border-secondary mb-3">
-                <div class="card-header"><span class="oi oi-people"></span> 用户</div>
+            <div class="card border-primary mb-3">
+                <div class="card-header"><span class="oi oi-image"></span> 文章</div>
                 <div class="card-body">
-                    <h4 class="card-title">总数: {{ user_count|default('0') }}</h4>
-                    <p class="card-text">被锁定数: {{ locked_user_count|default('0') }}
-                        Blocked: {{ blocked_user_count|default('0') }}</p>
-                    <a class="btn btn-primary text-white" href="{{ url_for('.manage_user') }}">管理</a>
-                    <a class="btn btn-secondary text-white" href="{{ url_for('.manage_user', filter='locked') }}">查看被锁定的用户</a>
-                    <a class="btn btn-secondary text-white" href="{{ url_for('.manage_user', filter='blocked') }}">View
-                        Blocked</a>
+                    <h4 class="card-title">总数: {{ article_count|default('0') }}</h4>
+                    <p class="card-text">被举报数: {{ reported_articles_count|default('0') }}</p>
+                    <a class="btn btn-primary text-white" href="{{ url_for('.manage_article') }}">管理</a>
                 </div>
             </div>
         </div>
@@ -105,6 +101,21 @@
                     <h4 class="card-title">总数: {{ tag_count|default('0') }}</h4>
                     <p class="card-text">&nbsp;</p>
                     <a class="btn btn-primary text-white" href="{{ url_for('.manage_tag') }}">管理</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card border-secondary mb-3">
+                <div class="card-header"><span class="oi oi-people"></span> 用户</div>
+                <div class="card-body">
+                    <h4 class="card-title">总数: {{ user_count|default('0') }}</h4>
+                    <p class="card-text">被锁定数: {{ locked_user_count|default('0') }}
+                        Blocked: {{ blocked_user_count|default('0') }}</p>
+                    <a class="btn btn-primary text-white" href="{{ url_for('.manage_user') }}">管理</a>
+                    <a class="btn btn-secondary text-white" href="{{ url_for('.manage_user', filter='locked') }}">查看被锁定的用户</a>
+                    <a class="btn btn-secondary text-white" href="{{ url_for('.manage_user', filter='blocked') }}">查看被封禁用户</a>
                 </div>
             </div>
         </div>

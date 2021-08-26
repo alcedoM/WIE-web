@@ -2,7 +2,7 @@
 {% from 'bootstrap/pagination.html' import render_pagination %}
 {% from 'bootstrap/form.html' import render_form, render_field %}
 
-{% block title %}{{ photo.author.name }}'s Photo{% endblock %}
+{% block title %}{{ photo.author.name }}'s Article{% endblock %}
 
 {% block content %}
     <div class="row">
@@ -12,6 +12,7 @@
                     <img class="img-fluid" src="{{ url_for('.get_image', filename=photo.filename_m) }}">
                 </a>
             </div>
+
             <a class="btn btn-primary btn-sm text-white" data-toggle="modal" data-target="#share-modal">分享</a>
             {% if current_user == photo.author or current_user.can('MODERATE') %}
                 <a class="btn btn-danger btn-sm text-white" data-toggle="modal" data-target="#confirm-delete"

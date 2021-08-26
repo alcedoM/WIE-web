@@ -21,7 +21,8 @@ class LoginForm(FlaskForm):
 
 
 class RegisterForm(FlaskForm):
-    name = StringField('姓名', validators=[DataRequired(), Length(1, 30)])
+    studentid = StringField('学号',validators=[DataRequired(), Length(1, 20)])
+    name = StringField('真实姓名', validators=[DataRequired(), Length(1, 30)])
     email = StringField('邮箱', validators=[DataRequired(), Length(1, 254), Email()])
     username = StringField('用户名', validators=[DataRequired(), Length(1, 20),
                                                    Regexp('^[a-zA-Z0-9]*$',

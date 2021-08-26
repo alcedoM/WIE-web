@@ -23,3 +23,8 @@ class TagForm(FlaskForm):
 class CommentForm(FlaskForm):
     body = TextAreaField('', validators=[DataRequired()])
     submit = SubmitField('提交')
+
+class ArticleForm(FlaskForm):
+    title = TextAreaField('标题(30字)', validators=[Optional(), Length(0,30)])
+    main_text = TextAreaField('正文', validators=[Optional(), Length(0,500)])
+    submit = SubmitField('提交')

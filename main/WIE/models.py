@@ -85,6 +85,7 @@ class Collect(db.Model):
 @whooshee.register_model('name', 'username')
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
+    studentid = db.Column(db.String(20))
     username = db.Column(db.String(20), unique=True, index=True)
     email = db.Column(db.String(254), unique=True, index=True)
     password_hash = db.Column(db.String(128))
@@ -115,6 +116,7 @@ class User(db.Model, UserMixin):
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'))
 
     role = db.relationship('Role', back_populates='users')
+    aritcles = db.relationship('Article', back_populates='author', cascade='all')
     photos = db.relationship('Photo', back_populates='author', cascade='all')
     comments = db.relationship('Comment', back_populates='author', cascade='all')
     notifications = db.relationship('Notification', back_populates='receiver', cascade='all')
@@ -244,6 +246,20 @@ class Photo(db.Model):
     comments = db.relationship('Comment', back_populates='photo', cascade='all')
     collectors = db.relationship('Collect', back_populates='collected', cascade='all')
     tags = db.relationship('Tag', secondary=tagging, back_populates='photos')
+
+
+# @whooshee.register_model('description')
+class Article(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(30))
+    main_text = db.Column(db.String(500))
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+    can_comment = db.Column(db.Boolean, default=True)
+    flag = db.Column(db.Integer, default=0)
+    author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    author = db.relationship('User', back_populates='aritcles')
+
 
 
 @whooshee.register_model('name')

@@ -14,8 +14,8 @@ from sqlalchemy.sql.expression import func
 
 from WIE.decorators import confirm_required, permission_required
 from WIE.extensions import db
-from WIE.forms.main import DescriptionForm, TagForm, CommentForm
-from WIE.models import User, Photo, Tag, Follow, Collect, Comment, Notification
+from WIE.forms.main import DescriptionForm, TagForm, CommentForm, ArticleForm
+from WIE.models import User, Photo, Tag, Follow, Collect, Comment, Notification, Article
 from WIE.notifications import push_comment_notification, push_collect_notification
 from WIE.utils import rename_image, resize_image, redirect_back, flash_errors
 
@@ -116,17 +116,26 @@ def get_avatar(filename):
     return send_from_directory(current_app.config['AVATARS_SAVE_PATH'], filename)
 
 
-@main_bp.route('/upload', methods=['GET', 'POST'])
+@main_bp.route('/upload', methods=['GET', 'POST']) 
 @login_required
 @confirm_required
 @permission_required('UPLOAD')
 def upload():
+    return render_template('main/upload.html')
+
+@main_bp.route('/upload/photo', methods=['GET', 'POST']) 
+@login_required
+@confirm_required
+@permission_required('UPLOAD')
+def upload_photo():
+
     if request.method == 'POST' and 'file' in request.files:
         f = request.files.get('file')
         filename = rename_image(f.filename)
         f.save(os.path.join(current_app.config['ALBUMY_UPLOAD_PATH'], filename))
         filename_s = resize_image(f, filename, current_app.config['ALBUMY_PHOTO_SIZE']['small'])
         filename_m = resize_image(f, filename, current_app.config['ALBUMY_PHOTO_SIZE']['medium'])
+
         photo = Photo(
             filename=filename,
             filename_s=filename_s,
@@ -135,7 +144,30 @@ def upload():
         )
         db.session.add(photo)
         db.session.commit()
-    return render_template('main/upload.html')
+    
+    
+    return render_template('main/uploadPic.html')
+
+@main_bp.route('/upload/article', methods=['GET', 'POST']) 
+@login_required
+@confirm_required
+@permission_required('UPLOAD')
+def upload_article():
+    form = ArticleForm()
+    if request.method == 'POST' and form.validate_on_submit():
+        title = form.title.data
+        main_text = form.main_text.data
+
+        article = Article(
+            title = title,
+            main_text = main_text,
+            author=current_user._get_current_object()
+        )
+        db.session.add(article)
+        db.session.commit()
+
+    return render_template('main/uploadText.html', form=form)
+
 
 
 @main_bp.route('/photo/<int:photo_id>')
@@ -354,6 +386,21 @@ def delete_photo(photo_id):
             return redirect(url_for('user.index', username=photo.author.username))
         return redirect(url_for('.show_photo', photo_id=photo_p.id))
     return redirect(url_for('.show_photo', photo_id=photo_n.id))
+
+
+@main_bp.route('/delete/article/<int:article_id>', methods=['POST'])
+@login_required
+def delete_article(article_id):
+    article = Article.query.get_or_404(article_id)
+    if current_user != article.author and not current_user.can('MODERATE'):
+        abort(403)
+
+    db.session.delete(article)
+    db.session.commit()
+    flash('article deleted.', 'info')
+    return redirect(url_for('admin.manage_article'))
+
+
 
 
 @main_bp.route('/delete/comment/<int:comment_id>', methods=['POST'])
