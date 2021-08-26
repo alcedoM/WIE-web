@@ -67,6 +67,32 @@ def search():
     results = pagination.items
     return render_template('main/search.html', q=q, results=results, pagination=pagination, category=category)
 
+@main_bp.route('/rank')
+def rank():
+    sql1="""select username, score_acm, score_datascience, score_web ,score_hardware,
+       (score_acm+score_datascience+score_web+score_hardware) as 'sumscore' from User;
+    """
+    data1=db.session.execute(sql1)
+    rank_list=[]
+    score=[]
+    for i in data1:
+        if i[-1]!=0:
+            rank_list.append(list(i))
+            score.append(i[-1])
+    c_index=0
+    c_score=999999999
+    score_rank=[]
+    for j in score:
+        if j<c_score:
+            c_index+=1
+            c_score=j
+        score_rank.append(c_index)
+    for i in range(len(rank_list)):
+        rank_list[i].insert(0,score_rank[i])
+
+    # print(rank_data)
+    # rank_data=[[1,2,3,4,5,6,7],[1,2,3,4,5,6,7]]
+    return render_template('main/rank.html', data=rank_list)
 
 @main_bp.route('/notifications')
 @login_required
