@@ -8,6 +8,41 @@
 {% if current_user.is_authenticated %}
     <div class="row justify-content-md-center">
         <div class="col-md-8">
+            {% if articles %}
+                {% for article in articles %}
+                    <div class="card mb-3 w-100 bg-light">
+                        <div class="card-header">
+                            <a class="dead-link" href="{{ url_for('user.index', username=article.author.username) }}">
+                                <img class="rounded img-fluid avatar-s profile-popover"
+                                     data-href="{{ url_for('ajax.get_profile', user_id=article.author.id) }}"
+                                     src="{{ url_for('main.get_avatar', filename=article.author.avatar_m) }}">
+                            </a>
+                            <a class="profile-popover trend-card-avatar"
+                               data-href="{{ url_for('ajax.get_profile', user_id=article.author.id) }}"
+                               href="{{ url_for('user.index', username=article.author.username) }}">{{ article.author.name }}</a>
+                            <span class="float-right">
+                                <small data-toggle="tooltip" data-placement="top" data-timestamp="{{ article.timestamp }}" data-delay="500">
+                                    {{ moment(article.timestamp).fromNow(refresh=True) }}
+                                </small>
+                            </span>
+                        </div>  
+                        <div class="card-body">
+                            <div class="" >
+                                <a class="thumbnail" href="{{ url_for('.show_article', article_id=article.id) }}" target="_blank">
+                                    <h3 align="center">{{article.title}}</h3>
+                                </a>
+                                <div id="main_text" >{{article.main_text|safe}}</div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                {{ render_pagination(pagination_article, align='center') }}
+            {% else %}
+                <div class="tip text-center">
+                    <h3>没有文章</h3>
+                    <p><a href="{{ url_for('.explore') }}">探索</a></p>
+                </div>
+            {% endif %}
             {% if photos %}
                 {% for photo in photos %}
                     <div class="card mb-3 w-100 bg-light">
@@ -71,20 +106,19 @@
                         </div>
                     </div>
                 {% endfor %}
+                {{ render_pagination(pagination, align='center') }}
             {% else %}
                 <div class="tip text-center">
-                    <h3>没有信息</h3>
+                    <h3>没有图片</h3>
                     <p><a href="{{ url_for('.explore') }}">探索</a></p>
                 </div>
             {% endif %}
         </div>
-        <div class="col-md-3">
+            <div class="col-md-3">
             {% include 'main/_sidebar.html' %}
-        </div>
+            </div>
     </div>
-    {% if photos %}
-        {{ render_pagination(pagination, align='center') }}
-    {% endif %}
+
 {% else %}
     <div class="jumbotron">
         <div class="row">
@@ -99,4 +133,11 @@
         </div>
     </div>
 {% endif %}
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script type="text/javascript">
+        $("#main_text").html(v.memo.replace(/[\n\r]/g,'<br>'));
+    </script>
 {% endblock %}

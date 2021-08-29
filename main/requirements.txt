@@ -7,6 +7,7 @@ flask-login==0.5.0
 flask-mail==0.9.1
 flask-moment==0.9.0
 flask-sqlalchemy==2.4.1
+flask-ckeditor==0.4.6
 flask-whooshee==0.7.0
 flask-wtf==0.14.3
 flask==1.1.2

@@ -3,29 +3,21 @@
 
 {% block title %}Upload{% endblock %}
 
-{% block styles %}
-    {{ super() }}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/dropzone.min.css') }}" type="text/css">
-    {{ dropzone.style('margin: 20px 0; border: 2px dashed #0087F7; min-height: 400px;') }}
-{% endblock %}
-
 {% block content %}
     <div class="page-header">
         <h1>发文章</h1>
     </div>
-    <div class="row">
-        <div class="col-md-12">
-            {{ render_form(form) }}
-            <a class="btn btn-light float-right" href="{{ url_for('user.index', username=current_user.username) }}">
-                返回首页
-            </a>
+    {{ render_form(form) }}
+    <a class="btn btn-light float-right" href="{{ url_for('main.index', username=current_user.username) }}">
+        返回首页
+    </a>
 
-        </div>
-    </div>
 {% endblock %}
+
+
 
 {% block scripts %}
     {{ super() }}
-    <script src="{{ url_for('static', filename='js/dropzone.min.js') }}"></script>
-    {{ dropzone.config() }}
+    <script type="text/javascript" src="{{ url_for('static', filename='ckeditor/ckeditor.js') }}"></script>
+
 {% endblock %}

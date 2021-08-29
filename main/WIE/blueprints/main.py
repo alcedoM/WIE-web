@@ -19,8 +19,6 @@ from WIE.models import User, Photo, Tag, Follow, Collect, Comment, Notification,
 from WIE.notifications import push_comment_notification, push_collect_notification
 from WIE.utils import rename_image, resize_image, redirect_back, flash_errors
 
-
-
 main_bp = Blueprint('main', __name__)
 
 
@@ -35,11 +33,18 @@ def index():
             .order_by(Photo.timestamp.desc()) \
             .paginate(page, per_page)
         photos = pagination.items
+        pagination_article = Article.query \
+            .order_by(Article.timestamp.desc()) \
+            .paginate(page, per_page)
+        articles = pagination_article.items
     else:
         pagination = None
         photos = None
+        pagination_article = None
+        articles = None
     tags = Tag.query.join(Tag.photos).group_by(Tag.id).order_by(func.count(Photo.id).desc()).limit(10)
-    return render_template('main/index.html', pagination=pagination, photos=photos, tags=tags, Collect=Collect)
+    return render_template('main/index.html', pagination=pagination, pagination_article=pagination_article,
+                           photos=photos, articles=articles, tags=tags, Collect=Collect)
 
 
 @main_bp.route('/explore')
@@ -67,32 +72,34 @@ def search():
     results = pagination.items
     return render_template('main/search.html', q=q, results=results, pagination=pagination, category=category)
 
+
 @main_bp.route('/rank')
 def rank():
-    sql1="""select username, score_acm, score_datascience, score_web ,score_hardware,
+    sql1 = """select username, score_acm, score_datascience, score_web ,score_hardware,
        (score_acm+score_datascience+score_web+score_hardware) as 'sumscore' from User;
     """
-    data1=db.session.execute(sql1)
-    rank_list=[]
-    score=[]
+    data1 = db.session.execute(sql1)
+    rank_list = []
+    score = []
     for i in data1:
-        if i[-1]!=0:
+        if i[-1] != 0:
             rank_list.append(list(i))
             score.append(i[-1])
-    c_index=0
-    c_score=999999999
-    score_rank=[]
+    c_index = 0
+    c_score = 999999999
+    score_rank = []
     for j in score:
-        if j<c_score:
-            c_index+=1
-            c_score=j
+        if j < c_score:
+            c_index += 1
+            c_score = j
         score_rank.append(c_index)
     for i in range(len(rank_list)):
-        rank_list[i].insert(0,score_rank[i])
+        rank_list[i].insert(0, score_rank[i])
 
     # print(rank_data)
     # rank_data=[[1,2,3,4,5,6,7],[1,2,3,4,5,6,7]]
     return render_template('main/rank.html', data=rank_list)
+
 
 @main_bp.route('/notifications')
 @login_required
@@ -142,19 +149,19 @@ def get_avatar(filename):
     return send_from_directory(current_app.config['AVATARS_SAVE_PATH'], filename)
 
 
-@main_bp.route('/upload', methods=['GET', 'POST']) 
+@main_bp.route('/upload', methods=['GET', 'POST'])
 @login_required
 @confirm_required
 @permission_required('UPLOAD')
 def upload():
     return render_template('main/upload.html')
 
-@main_bp.route('/upload/photo', methods=['GET', 'POST']) 
+
+@main_bp.route('/upload/photo', methods=['GET', 'POST'])
 @login_required
 @confirm_required
 @permission_required('UPLOAD')
 def upload_photo():
-
     if request.method == 'POST' and 'file' in request.files:
         f = request.files.get('file')
         filename = rename_image(f.filename)
@@ -170,30 +177,27 @@ def upload_photo():
         )
         db.session.add(photo)
         db.session.commit()
-    
-    
+
     return render_template('main/uploadPic.html')
 
-@main_bp.route('/upload/article', methods=['GET', 'POST']) 
+
+@main_bp.route('/upload/article', methods=['GET', 'POST'])
 @login_required
 @confirm_required
 @permission_required('UPLOAD')
 def upload_article():
     form = ArticleForm()
-    if request.method == 'POST' and form.validate_on_submit():
+    if form.validate_on_submit():
         title = form.title.data
         main_text = form.main_text.data
+        author = current_user._get_current_object()
+        article = Article(title=title, main_text=main_text, author=author)
 
-        article = Article(
-            title = title,
-            main_text = main_text,
-            author=current_user._get_current_object()
-        )
         db.session.add(article)
         db.session.commit()
-
+        flash('发布成功', 'success')
+        return redirect(url_for('main.index'))
     return render_template('main/uploadText.html', form=form)
-
 
 
 @main_bp.route('/photo/<int:photo_id>')
@@ -212,6 +216,17 @@ def show_photo(photo_id):
     return render_template('main/photo.html', photo=photo, comment_form=comment_form,
                            description_form=description_form, tag_form=tag_form,
                            pagination=pagination, comments=comments)
+
+
+@main_bp.route('/article/<int:article_id>')
+def show_article(article_id):
+    article = Article.query.get_or_404(article_id)
+    page = request.args.get('page', 1, type=int)
+
+    main_text = article.main_text
+    title = article.title
+
+    return render_template('main/article.html', article=article, main_text=main_text, title=title)
 
 
 @main_bp.route('/photo/n/<int:photo_id>')
@@ -234,6 +249,30 @@ def photo_previous(photo_id):
         flash('This is already the first one.', 'info')
         return redirect(url_for('.show_photo', photo_id=photo_id))
     return redirect(url_for('.show_photo', photo_id=photo_p.id))
+
+
+@main_bp.route('/article/p/<int:article_id>')
+def article_previous(article_id):
+    article = Article.query.get_or_404(article_id)
+    article_p = Article.query.with_parent(article.author).filter(article.id > article_id).order_by(
+        Article.id.asc()).first()
+
+    if article_p is None:
+        flash('前面没有了', 'info')
+        return redirect(url_for('.show_article', article_id=article_id))
+    return redirect(url_for('.show_article', article_id=article_p.id))
+
+
+@main_bp.route('/article/n/<int:article_id>')
+def article_next(article_id):
+    article = Article.query.get_or_404(article_id)
+    article_n = Article.query.with_parent(article.author).filter(article.id < article_id).order_by(
+        Article.id.desc()).first()
+
+    if article_n is None:
+        flash('后面没有了', 'info')
+        return redirect(url_for('.show_article', article_id=article_id))
+    return redirect(url_for('.show_article', article_id=article_n.id))
 
 
 @main_bp.route('/collect/<int:photo_id>', methods=['POST'])
@@ -424,9 +463,7 @@ def delete_article(article_id):
     db.session.delete(article)
     db.session.commit()
     flash('article deleted.', 'info')
-    return redirect(url_for('admin.manage_article'))
-
-
+    return redirect(url_for('main.index'))
 
 
 @main_bp.route('/delete/comment/<int:comment_id>', methods=['POST'])

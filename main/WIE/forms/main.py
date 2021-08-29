@@ -6,6 +6,7 @@
     :license: MIT, see LICENSE for more details.
 """
 from flask_wtf import FlaskForm
+from flask_ckeditor import CKEditorField
 from wtforms import StringField, SubmitField, TextAreaField
 from wtforms.validators import DataRequired, Optional, Length
 
@@ -24,7 +25,8 @@ class CommentForm(FlaskForm):
     body = TextAreaField('', validators=[DataRequired()])
     submit = SubmitField('提交')
 
+
 class ArticleForm(FlaskForm):
-    title = TextAreaField('标题(30字)', validators=[Optional(), Length(0,30)])
-    main_text = TextAreaField('正文', validators=[Optional(), Length(0,500)])
+    title = StringField('标题', validators=[DataRequired(), Length(1, 60)])
+    main_text = CKEditorField('正文', validators=[DataRequired()])
     submit = SubmitField('提交')
