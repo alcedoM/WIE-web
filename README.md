@@ -79,6 +79,11 @@ $ flask run
     - 发文章后端（待完善）
     - 文章管理后端
 - 8.29
-  - 文章发布界面富文本编辑器
+  - 文章发布界面富文本编辑器（需要安装flask-ckeditor）
+
+    ```bash
+    $ pipenv install flask-ckeditor
+    ```
+
   - 展示文章
 
