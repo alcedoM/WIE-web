@@ -36,6 +36,19 @@ def index():
                            reported_photos_count=reported_photos_count, article_count=article_count)
 
 
+@admin_bp.route('/reset-password/user/<int:user_id>', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def reset_password(user_id):
+    user = User.query.get_or_404(user_id)
+    if user.role.name in ['Administrator', 'Moderator']:
+        flash('Permission denied.', 'warning')
+    else:
+        user.reset_password()
+        flash('重置成功.', 'info')
+    return redirect_back()
+
+
 @admin_bp.route('/profile/<int:user_id>', methods=['GET', 'POST'])
 @login_required
 @admin_required

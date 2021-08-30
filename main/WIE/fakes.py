@@ -20,20 +20,20 @@ fake = Faker()
 
 
 def fake_admin():
-    admin = User(name='Grey Li',
-                 username='greyli',
+    admin = User(name='admin',
+                 username='admin',
                  email='admin@helloflask.com',
                  bio=fake.sentence(),
-                 website='http://greyli.com',
+                 website=None,
                  confirmed=True)
     admin.set_password('helloflask')
-    notification = Notification(message='Hello, welcome to Albumy.', receiver=admin)
+    notification = Notification(message='Hello, welcome to WIE.', receiver=admin)
     db.session.add(notification)
     db.session.add(admin)
     db.session.commit()
 
 
-def fake_user(count=10):
+def fake_user(count=5):
     for i in range(count):
         user = User(name=fake.name(),
                     confirmed=True,
@@ -51,14 +51,14 @@ def fake_user(count=10):
             db.session.rollback()
 
 
-def fake_follow(count=30):
+def fake_follow(count=5):
     for i in range(count):
         user = User.query.get(random.randint(1, User.query.count()))
         user.follow(User.query.get(random.randint(1, User.query.count())))
     db.session.commit()
 
 
-def fake_tag(count=20):
+def fake_tag(count=5):
     for i in range(count):
         tag = Tag(name=fake.word())
         db.session.add(tag)
@@ -68,7 +68,7 @@ def fake_tag(count=20):
             db.session.rollback()
 
 
-def fake_photo(count=30):
+def fake_photo(count=1):
     # photos
     upload_path = current_app.config['ALBUMY_UPLOAD_PATH']
     for i in range(count):
@@ -98,14 +98,14 @@ def fake_photo(count=30):
     db.session.commit()
 
 
-def fake_collect(count=50):
+def fake_collect(count=5):
     for i in range(count):
         user = User.query.get(random.randint(1, User.query.count()))
         user.collect(Photo.query.get(random.randint(1, Photo.query.count())))
     db.session.commit()
 
 
-def fake_comment(count=100):
+def fake_comment(count=5):
     for i in range(count):
         comment = Comment(
             author=User.query.get(random.randint(1, User.query.count())),

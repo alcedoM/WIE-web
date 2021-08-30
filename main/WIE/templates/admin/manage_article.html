@@ -44,11 +44,14 @@
             {% for article in articles %}
                 <tr>
                     <td>
-                        {{article.title}}
+                        <a href={{ url_for('main.show_article', article_id=article.id ) }}>{{article.title}}</a>
                     </td>
-                    <td>{{ article.main_text }}</td>
                     <td>
-                        <a href="{{ url_for('user.index', username=article.author.username) }}">{{ article.author.name }}</a>
+                        {{ article.main_text|striptags|truncate }}
+                        <a href={{ url_for('main.show_article', article_id=article.id ) }}>更多</a>
+                    </td>
+                    <td>
+                        <a href="{{ url_for('user.show_score', username=article.author.username) }}">{{ article.author.name }}</a>
                     </td>
                     <td>{{ moment(article.timestamp).format('LL') }}</td>
                     <td>

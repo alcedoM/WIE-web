@@ -72,14 +72,21 @@ class Follow(db.Model):
 
 # relationship object
 class Collect(db.Model):
-    collector_id = db.Column(db.Integer, db.ForeignKey('user.id'),
-                             primary_key=True)
-    collected_id = db.Column(db.Integer, db.ForeignKey('photo.id'),
-                             primary_key=True)
+    collector_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    collected_id = db.Column(db.Integer, db.ForeignKey('photo.id'), primary_key=True)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
     collector = db.relationship('User', back_populates='collections', lazy='joined')
     collected = db.relationship('Photo', back_populates='collectors', lazy='joined')
+
+
+class ArticleCollect(db.Model):
+    collector_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    article_collected_id = db.Column(db.Integer, db.ForeignKey('article.id'), primary_key=True)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
+    collector = db.relationship('User', back_populates='article_collections', lazy='joined')
+    article_collected = db.relationship('Article', back_populates='collectors', lazy='joined')
 
 
 @whooshee.register_model('name', 'username')
@@ -99,10 +106,10 @@ class User(db.Model, UserMixin):
     avatar_l = db.Column(db.String(64))
     avatar_raw = db.Column(db.String(64))
     # score
-    score_acm = db.Column(db.Integer, default = 0)
-    score_datascience = db.Column(db.Integer, default = 0)
-    score_web = db.Column(db.Integer, default = 0)
-    score_hardware = db.Column(db.Integer, default = 0)
+    score_acm = db.Column(db.Integer, default=0)
+    score_datascience = db.Column(db.Integer, default=0)
+    score_web = db.Column(db.Integer, default=0)
+    score_hardware = db.Column(db.Integer, default=0)
 
     confirmed = db.Column(db.Boolean, default=False)
     locked = db.Column(db.Boolean, default=False)
@@ -116,10 +123,11 @@ class User(db.Model, UserMixin):
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'))
 
     role = db.relationship('Role', back_populates='users')
-    aritcles = db.relationship('Article', back_populates='author', cascade='all')
+    articles = db.relationship('Article', back_populates='author', cascade='all')
     photos = db.relationship('Photo', back_populates='author', cascade='all')
     comments = db.relationship('Comment', back_populates='author', cascade='all')
     notifications = db.relationship('Notification', back_populates='receiver', cascade='all')
+    article_collections = db.relationship('ArticleCollect', back_populates='collector', cascade='all')
     collections = db.relationship('Collect', back_populates='collector', cascade='all')
     following = db.relationship('Follow', foreign_keys=[Follow.follower_id], back_populates='follower',
                                 lazy='dynamic', cascade='all')
@@ -134,6 +142,10 @@ class User(db.Model, UserMixin):
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
+
+    def reset_password(self):
+        self.password_hash = generate_password_hash('12345678')
+        db.session.commit()
 
     def set_role(self):
         if self.role is None:
@@ -182,8 +194,23 @@ class User(db.Model, UserMixin):
             db.session.delete(collect)
             db.session.commit()
 
+    def article_collect(self, article):
+        if not self.article_is_collecting(article):
+            collect = ArticleCollect(collector=self, article_collected=article)
+            db.session.add(collect)
+            db.session.commit()
+
+    def article_uncollect(self, article):
+        collect = ArticleCollect.query.with_parent(self).filter_by(article_collected_id=article.id).first()
+        if collect:
+            db.session.delete(collect)
+            db.session.commit()
+
     def is_collecting(self, photo):
         return Collect.query.with_parent(self).filter_by(collected_id=photo.id).first() is not None
+
+    def article_is_collecting(self, article):
+        return ArticleCollect.query.with_parent(self).filter_by(article_collected_id=article.id).first() is not None
 
     def lock(self):
         self.locked = True
@@ -229,6 +256,11 @@ tagging = db.Table('tagging',
                    db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'))
                    )
 
+article_tagging = db.Table('article_tagging',
+                           db.Column('article_id', db.Integer, db.ForeignKey('article.id')),
+                           db.Column('article_tag_id', db.Integer, db.ForeignKey('tag.id'))
+                           )
+
 
 @whooshee.register_model('description')
 class Photo(db.Model):
@@ -258,8 +290,10 @@ class Article(db.Model):
 
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    author = db.relationship('User', back_populates='aritcles')
-
+    author = db.relationship('User', back_populates='articles')
+    collectors = db.relationship('ArticleCollect', back_populates='article_collected', cascade='all')
+    comments = db.relationship('Comment', back_populates='article', cascade='all')
+    tags = db.relationship('Tag', secondary=article_tagging, back_populates='articles')
 
 
 @whooshee.register_model('name')
@@ -268,6 +302,7 @@ class Tag(db.Model):
     name = db.Column(db.String(64), index=True, unique=True)
 
     photos = db.relationship('Photo', secondary=tagging, back_populates='tags')
+    articles = db.relationship('Article', secondary=article_tagging, back_populates='tags')
 
 
 class Comment(db.Model):
@@ -279,8 +314,10 @@ class Comment(db.Model):
     replied_id = db.Column(db.Integer, db.ForeignKey('comment.id'))
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     photo_id = db.Column(db.Integer, db.ForeignKey('photo.id'))
+    article_id = db.Column(db.Integer, db.ForeignKey('article.id'))
 
     photo = db.relationship('Photo', back_populates='comments')
+    article = db.relationship('Article', back_populates='comments')
     author = db.relationship('User', back_populates='comments')
     replies = db.relationship('Comment', back_populates='replied', cascade='all')
     replied = db.relationship('Comment', back_populates='replies', remote_side=[id])

@@ -184,6 +184,10 @@ footer {
     text-align: center;
 }
 
+.article {
+    padding: 10px 0;
+}
+
 .sidebar-nav {
     min-height: 150px;
 }

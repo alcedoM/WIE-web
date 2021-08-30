@@ -8,7 +8,7 @@
 from flask import render_template, jsonify, Blueprint
 from flask_login import current_user
 
-from WIE.models import User, Photo, Notification
+from WIE.models import User, Photo, Notification, Article
 from WIE.notifications import push_collect_notification, push_follow_notification
 
 ajax_bp = Blueprint('ajax', __name__)
@@ -43,6 +43,13 @@ def collectors_count(photo_id):
     return jsonify(count=count)
 
 
+@ajax_bp.route('/<int:article_id>/article-followers-count')
+def article_collectors_count(article_id):
+    article = Article.query.get_or_404(article_id)
+    count = len(article.collectors)
+    return jsonify(count=count)
+
+
 @ajax_bp.route('/collect/<int:photo_id>', methods=['POST'])
 def collect(photo_id):
     if not current_user.is_authenticated:
@@ -73,6 +80,38 @@ def uncollect(photo_id):
 
     current_user.uncollect(photo)
     return jsonify(message='Collect canceled.')
+
+
+@ajax_bp.route('/article-collect/<int:article_id>', methods=['POST'])
+def article_collect(article_id):
+    if not current_user.is_authenticated:
+        return jsonify(message='Login required.'), 403
+    if not current_user.confirmed:
+        return jsonify(message='Confirm account required.'), 400
+    if not current_user.can('COLLECT'):
+        return jsonify(message='No permission.'), 403
+
+    article = Article.query.get_or_404(article_id)
+    if current_user.article_is_collecting(article):
+        return jsonify(message='已经被收藏'), 400
+
+    current_user.article_collect(article)
+    if current_user != article.author and article.author.receive_collect_notification:
+        push_collect_notification(collector=current_user, article_id=article_id, receiver=article.author)
+    return jsonify(message='收藏成功.')
+
+
+@ajax_bp.route('/article-uncollect/<int:article_id>', methods=['POST'])
+def article_uncollect(article_id):
+    if not current_user.is_authenticated:
+        return jsonify(message='需要登录.'), 403
+
+    article = Article.query.get_or_404(article_id)
+    if not current_user.article_is_collecting(article):
+        return jsonify(message='还没收藏.'), 400
+
+    current_user.article_uncollect(article)
+    return jsonify(message='取消收藏.')
 
 
 @ajax_bp.route('/follow/<username>', methods=['POST'])

@@ -36,6 +36,7 @@ def index(username):
     photos = pagination.items
     return render_template('user/index.html', user=user, pagination=pagination, photos=photos)
 
+
 @user_bp.route('/<username>/score')
 def show_score(username):
     user = User.query.filter_by(username=username).first_or_404()
@@ -58,7 +59,6 @@ def show_collections(username):
 
 @user_bp.route('/follow/<username>', methods=['POST'])
 @login_required
-@confirm_required
 @permission_required('FOLLOW')
 def follow(username):
     user = User.query.filter_by(username=username).first_or_404()
@@ -129,7 +129,6 @@ def edit_profile():
 
 @user_bp.route('/settings/avatar')
 @login_required
-@confirm_required
 def change_avatar():
     upload_form = UploadAvatarForm()
     crop_form = CropAvatarForm()
@@ -138,7 +137,6 @@ def change_avatar():
 
 @user_bp.route('/settings/avatar/upload', methods=['POST'])
 @login_required
-@confirm_required
 def upload_avatar():
     form = UploadAvatarForm()
     if form.validate_on_submit():
@@ -153,7 +151,6 @@ def upload_avatar():
 
 @user_bp.route('/settings/avatar/crop', methods=['POST'])
 @login_required
-@confirm_required
 def crop_avatar():
     form = CropAvatarForm()
     if form.validate_on_submit():

@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/pagination.html' import render_pagination %}
+{% from 'bootstrap/form.html' import render_form, render_field %}
+
+{% block title %}Add tag{% endblock %}
+
+{% block content %}
+    <div id="tag-form">
+        <form action="{{ url_for('.new_art_tag', article_id=article.id) }}" method="post">
+            {{ tag_form.csrf_token }}
+            {{ render_field(tag_form.tag) }}
+            <a class="btn btn-light btn-sm" id="cancel-tag">取消</a>
+            {{ render_field(tag_form.submit, class='btn btn-success btn-sm') }}
+        </form>
+        {% if article.tags %}
+            <hr>
+            {% for tag in article.tags %}
+                <a class="dead-link" href="#!"
+                   data-href="{{ url_for('.delete_art_tag', article_id=article.id, tag_id=tag.id) }}"
+                   data-toggle="modal" data-target="#confirm-delete" title="Delete tag">
+                <span class="badge badge-danger">
+                {{ tag.name }} <span class="oi oi-trash" aria-hidden="true"></span>
+            </span>
+                </a>
+            {% endfor %}
+        {% endif %}
+    </div>
+{% endblock %}

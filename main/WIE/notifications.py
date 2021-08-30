@@ -27,6 +27,14 @@ def push_comment_notification(photo_id, receiver, page=1):
     db.session.commit()
 
 
+def push_art_comment_notification(article_id, receiver, page=1):
+    message = '<a href="%s#comments">这篇文章</a>收到了评论' % \
+              (url_for('main.show_article', article_id=article_id, page=page))
+    notification = Notification(message=message, receiver=receiver)
+    db.session.add(notification)
+    db.session.commit()
+
+
 def push_collect_notification(collector, photo_id, receiver):
     message = '<a href="%s">%s</a>收藏了你的<a href="%s">图片</a>' % \
               (url_for('user.index', username=collector.username),

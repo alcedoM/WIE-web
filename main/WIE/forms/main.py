@@ -28,5 +28,6 @@ class CommentForm(FlaskForm):
 
 class ArticleForm(FlaskForm):
     title = StringField('标题', validators=[DataRequired(), Length(1, 60)])
+
     main_text = CKEditorField('正文', validators=[DataRequired()])
     submit = SubmitField('提交')
