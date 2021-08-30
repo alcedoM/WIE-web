@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/pagination.html' import render_pagination %}
+
+{% block title %}{{ user.name }}{% endblock %}
+
+{% block content %}
+    {% include 'user/_header.html' %}
+    <div class="row">
+        <div class="col-md-12">
+            {% if articles %}
+                {% for article in articles %}
+                    <div class="card mb-3 w-100 bg-light">
+                        <div class="card-body">
+                            <div class="">
+                                <a class="thumbnail" href="{{ url_for('main.show_article', article_id=article.id) }}"
+                                   target="_blank">
+                                    <h3 align="center">{{ article.title }}</h3>
+                                </a>
+                                <div id="main_text">
+                                    {{ article.main_text|striptags|truncate }}
+                                    <small><a
+                                            href="{{ url_for('main.show_article', article_id=article.id) }}">更多</a></small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="tip text-center">
+                    <h3>没有文章</h3>
+                    {% if user == current_user and current_user.can('MODERATE') %}
+                        <a class="btn btn-link" href="{{ url_for('main.upload') }}">上传</a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    {% if articles %}
+        <div class="page-footer">
+            {{ render_pagination(pagination, align='center') }}
+        </div>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/pagination.html' import render_pagination %}
+{% from 'macros.html' import photo_card %}
+
+{% block title %}{{ user.name }}'s collection{% endblock %}
+
+{% block content %}
+    {% include 'user/_header.html' %}
+    <div class="row">
+        <div class="col-md-12">
+            {% if user.public_collections or current_user == user %}
+                {% if collects %}
+                    {% for collect in collects %}
+                        <div class="card mb-3 w-100 bg-light">
+                        <div class="card-body">
+                            <div class="">
+                                <a class="thumbnail" href="{{ url_for('main.show_article', article_id=collect.article_collected.id) }}"
+                                   target="_blank">
+                                    <h3 align="left">{{ collect.article_collected.title }}</h3>
+                                </a>
+                                <a href="{{ url_for('user.show_score', username=collect.article_collected.author.username)}}">
+                                    <p align="left">作者：{{ collect.article_collected.author.username }}</p>
+                                </a>
+                                <div align="left" id="main_text">
+                                    {{ collect.article_collected.main_text|striptags|truncate }}
+                                    <small><a
+                                            href="{{ url_for('main.show_article', article_id=collect.article_collected.id) }}">更多</a></small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="tip">
+                        <h3>空空如也</h3>
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="tip">
+                    <h3>This user's collections was private.</h3>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    {% if collects %}
+        <div class="page-footer">
+            {{ render_pagination(pagination, align='center') }}
+        </div>
+    {% endif %}
+{% endblock %}

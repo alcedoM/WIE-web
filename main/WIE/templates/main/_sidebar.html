@@ -15,7 +15,7 @@
         <a class="card-link" href="{{ url_for('user.show_score', username=current_user.username) }}">
             <span class="oi oi-home"></span> 我的主页
         </a><br>
-        <a class="card-link" href="{{ url_for('user.show_collections', username=current_user.username) }}">
+        <a class="card-link" href="{{ url_for('user.show_art_collections', username=current_user.username) }}">
             <span class="oi oi-star"></span> 我的收藏
         </a>
     </div>
@@ -24,8 +24,8 @@
     <div class="card-header">热门标签</div>
     <div class="list-group">
         {% for tag in tags %}
-            <a class="list-group-item" href="{{ url_for('.show_tag', tag_id=tag.id) }}">{{ tag.name }}
-                <span class="badge badge-pill">{{ tag.photos|length }}</span>
+            <a class="list-group-item" href="{{ url_for('.show_art_tag', tag_id=tag.id) }}">{{ tag.name }}
+                <span class="badge badge-pill">{{ tag.articles|length }}</span>
             </a>
         {% endfor %}
     </div>

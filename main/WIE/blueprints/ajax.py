@@ -86,8 +86,6 @@ def uncollect(photo_id):
 def article_collect(article_id):
     if not current_user.is_authenticated:
         return jsonify(message='Login required.'), 403
-    if not current_user.confirmed:
-        return jsonify(message='Confirm account required.'), 400
     if not current_user.can('COLLECT'):
         return jsonify(message='No permission.'), 403
 

@@ -75,10 +75,14 @@
 <div class="user-nav">
     <ul class="nav nav-tabs">
         {{ render_nav_item('user.show_score', '分数', username=user.username) }}
-        {% if current_user.can('MODERATE') %}
-            {{ render_nav_item('user.index', '文章', user.photos|length, username=user.username) }}
+        {% if current_user.can('MODERATE') or user.can('MODERATE') %}
+            {{ render_nav_item('user.index', '图片', user.photos|length, username=user.username) }}
+            {{ render_nav_item('user.show_article', '文章', user.articles|length, username=user.username)}}
         {% endif %}
-        {{ render_nav_item('user.show_collections', '收藏', user.collections|length, username=user.username) }}
+        {% if current_user==user %}
+            {{ render_nav_item('user.show_collections', '图片收藏', user.collections|length, username=user.username) }}
+            {{ render_nav_item('user.show_art_collections', '文章收藏', user.collections|length, username=user.username) }}
+        {% endif %}
         {{ render_nav_item('user.show_following', '关注', user.following.count() - 1, username=user.username) }}
         {{ render_nav_item('user.show_followers', '关注者', user.followers.count() - 1, username=user.username) }}
     </ul>

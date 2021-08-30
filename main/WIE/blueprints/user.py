@@ -13,7 +13,7 @@ from WIE.emails import send_change_email_email
 from WIE.extensions import db, avatars
 from WIE.forms.user import EditProfileForm, UploadAvatarForm, CropAvatarForm, ChangeEmailForm, \
     ChangePasswordForm, NotificationSettingForm, PrivacySettingForm, DeleteAccountForm
-from WIE.models import User, Photo, Collect
+from WIE.models import User, Photo, Collect, Article,ArticleCollect
 from WIE.notifications import push_follow_notification
 from WIE.settings import Operations
 from WIE.utils import generate_token, validate_token, redirect_back, flash_errors
@@ -37,6 +37,22 @@ def index(username):
     return render_template('user/index.html', user=user, pagination=pagination, photos=photos)
 
 
+@user_bp.route('/<username>/article')
+def show_article(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    if user == current_user and user.locked:
+        flash('你的账号被锁定.', 'danger')
+
+    if user == current_user and not user.active:
+        logout_user()
+
+    page = request.args.get('page', 1, type=int)
+    per_page = current_app.config['ALBUMY_PHOTO_PER_PAGE']
+    pagination = Article.query.with_parent(user).order_by(Article.timestamp.desc()).paginate(page, per_page)
+    articles = pagination.items
+    return render_template('user/article.html', user=user, pagination=pagination, articles=articles)
+
+
 @user_bp.route('/<username>/score')
 def show_score(username):
     user = User.query.filter_by(username=username).first_or_404()
@@ -55,6 +71,16 @@ def show_collections(username):
     pagination = Collect.query.with_parent(user).order_by(Collect.timestamp.desc()).paginate(page, per_page)
     collects = pagination.items
     return render_template('user/collections.html', user=user, pagination=pagination, collects=collects)
+
+
+@user_bp.route('/<username>/artcollections')
+def show_art_collections(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    page = request.args.get('page', 1, type=int)
+    per_page = current_app.config['ALBUMY_PHOTO_PER_PAGE']
+    pagination = ArticleCollect.query.with_parent(user).order_by(ArticleCollect.timestamp.desc()).paginate(page, per_page)
+    collects = pagination.items
+    return render_template('user/artcollections.html', user=user, pagination=pagination, collects=collects)
 
 
 @user_bp.route('/follow/<username>', methods=['POST'])

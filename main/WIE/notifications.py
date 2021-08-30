@@ -28,7 +28,7 @@ def push_comment_notification(photo_id, receiver, page=1):
 
 
 def push_art_comment_notification(article_id, receiver, page=1):
-    message = '<a href="%s#comments">这篇文章</a>收到了评论' % \
+    message = '<a href="%s#comments">文章:</a>收到了评论/回复' % \
               (url_for('main.show_article', article_id=article_id, page=page))
     notification = Notification(message=message, receiver=receiver)
     db.session.add(notification)

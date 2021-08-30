@@ -34,7 +34,7 @@
                 {% if article.tags %}
                     {% for tag in article.tags %}
                         <a class="badge badge-light"
-                           href="{{ url_for('.show_tag', tag_id=tag.id) }}" target="_blank"><span
+                           href="{{ url_for('.show_art_tag', tag_id=tag.id) }}" target="_blank"><span
                                 class="oi oi-tag"></span> {{ tag.name }}</a>
                     {% endfor %}
                 {% endif %}

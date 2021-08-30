@@ -32,11 +32,12 @@
                                 <div class="">
                                     <a class="thumbnail" href="{{ url_for('.show_article', article_id=article.id) }}"
                                        target="_blank">
-                                        <h3 align="center">{{ article.title }}</h3>
+                                        <h3 align="left">{{ article.title }}</h3>
                                     </a>
                                     <div id="main_text">
                                         {{ article.main_text|striptags|truncate }}
-                                        <small><a href="{{ url_for('.show_article', article_id=article.id) }}">更多</a></small>
+                                        <small><a
+                                                href="{{ url_for('.show_article', article_id=article.id) }}">更多</a></small>
                                     </div>
                                 </div>
                             </div>
@@ -57,7 +58,7 @@
                                         </button>
                                         <button class="{% if current_user.article_is_collecting(article) %}hide{% endif %}
                                      btn btn-outline-primary btn-sm collect-btn"
-                                                data-href="{{ url_for('ajax.article_collect', article_id=article.id) }}"
+                                                data-href="{{ url_for('main.art_collect', article_id=article.id) }}"
                                                 data-id="{{ article.id }}">
                                             <span class="oi oi-star"></span> 收藏
                                         </button>

@@ -34,7 +34,7 @@ def index():
     else:
         pagination_article = None
         articles = None
-    tags = Tag.query.join(Tag.photos).group_by(Tag.id).order_by(func.count(Photo.id).desc()).limit(10)
+    tags = Tag.query.join(Tag.articles).group_by(Tag.id).order_by(func.count(Article.id).desc()).limit(10)
     return render_template('main/index.html', pagination_article=pagination_article, articles=articles, tags=tags,
                            Collect=Collect)
 
@@ -336,7 +336,7 @@ def art_collect(article_id):
         return redirect(url_for('.show_article', article_id=article_id))
 
     current_user.article_collect(article)
-    flash('collected.', 'success')
+    flash('收藏成功.', 'success')
 
     return redirect(url_for('.show_article', article_id=article_id))
 
@@ -652,6 +652,22 @@ def show_tag(tag_id, order):
         photos.sort(key=lambda x: len(x.collectors), reverse=True)
         order_rule = 'collects'
     return render_template('main/tag.html', tag=tag, pagination=pagination, photos=photos, order_rule=order_rule)
+
+
+@main_bp.route('/art-tag/<int:tag_id>', defaults={'order': 'by_time'})
+@main_bp.route('/art-tag/<int:tag_id>/<order>')
+def show_art_tag(tag_id, order):
+    tag = Tag.query.get_or_404(tag_id)
+    page = request.args.get('page', 1, type=int)
+    per_page = current_app.config['ALBUMY_PHOTO_PER_PAGE']
+    order_rule = 'time'
+    pagination = Article.query.with_parent(tag).order_by(Article.timestamp.desc()).paginate(page, per_page)
+    articles = pagination.items
+
+    if order == 'by_collects':
+        articles.sort(key=lambda x: len(x.collectors), reverse=True)
+        order_rule = 'collects'
+    return render_template('main/art-tag.html', tag=tag, pagination=pagination, articles=articles, order_rule=order_rule)
 
 
 @main_bp.route('/delete/tag/<int:photo_id>/<int:tag_id>', methods=['POST'])
