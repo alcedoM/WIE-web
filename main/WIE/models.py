@@ -280,6 +280,7 @@ class Photo(db.Model):
     tags = db.relationship('Tag', secondary=tagging, back_populates='photos')
 
 
+# @whooshee.register_model('title')
 class Article(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(30))
