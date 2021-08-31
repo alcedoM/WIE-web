@@ -44,7 +44,7 @@
             {% for article in articles %}
                 <tr>
                     <td>
-                        <a href={{ url_for('main.show_article', article_id=article.id ) }}>{{article.title}}</a>
+                        <a href={{ url_for('main.show_article', article_id=article.id ) }}>{{ article.title }}</a>
                     </td>
                     <td>
                         {{ article.main_text|striptags|truncate }}
@@ -62,6 +62,18 @@
                                     onclick="return confirm('Are you sure?');">删除
                             </button>
                         </form>
+                        <button class="{% if not article.pin %}hide{% endif %}
+                                     btn btn-outline-secondary btn-sm uncollect-btn"
+                                data-href="{{ url_for('main.unpin', article_id=article.id) }}"
+                                data-id="{{ article.id }}">
+                            <span class="oi oi-pin"></span> 取消置顶
+                        </button>
+                        <button class="{% if article.pin %}hide{% endif %}
+                                     btn btn-outline-primary btn-sm collect-btn"
+                                data-href="{{ url_for('main.pin', article_id=article.id) }}"
+                                data-id="{{ article.id }}">
+                            <span class="oi oi-pin"></span> 置顶
+                        </button>
                     </td>
                 </tr>
             {% endfor %}

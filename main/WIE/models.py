@@ -283,6 +283,7 @@ class Photo(db.Model):
 # @whooshee.register_model('title')
 class Article(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    pin = db.Column(db.Boolean, default=False)
     title = db.Column(db.String(30))
     main_text = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow, index=True)

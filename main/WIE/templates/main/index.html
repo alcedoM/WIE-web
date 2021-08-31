@@ -10,70 +10,144 @@
             <div class="col-md-8">
                 {% if articles %}
                     {% for article in articles %}
-                        <div class="card mb-3 w-100 bg-light">
-                            <div class="card-header">
-                                <a class="dead-link"
-                                   href="{{ url_for('user.show_score', username=article.author.username) }}">
-                                    <img class="rounded img-fluid avatar-s profile-popover"
-                                         data-href="{{ url_for('ajax.get_profile', user_id=article.author.id) }}"
-                                         src="{{ url_for('main.get_avatar', filename=article.author.avatar_m) }}">
-                                </a>
-                                <a class="profile-popover trend-card-avatar"
-                                   data-href="{{ url_for('ajax.get_profile', user_id=article.author.id) }}"
-                                   href="{{ url_for('user.show_score', username=article.author.username) }}">{{ article.author.name }}</a>
-                                <span class="float-right">
+                        {% if article.pin %}
+                            <div class="card mb-3 w-100 bg-light border-primary">
+                                <div class="card-header">
+                                    <a class="dead-link"
+                                       href="{{ url_for('user.show_score', username=article.author.username) }}">
+                                        <img class="rounded img-fluid avatar-s profile-popover"
+                                             data-href="{{ url_for('ajax.get_profile', user_id=article.author.id) }}"
+                                             src="{{ url_for('main.get_avatar', filename=article.author.avatar_m) }}">
+                                    </a>
+                                    <a class="profile-popover trend-card-avatar"
+                                       data-href="{{ url_for('ajax.get_profile', user_id=article.author.id) }}"
+                                       href="{{ url_for('user.show_score', username=article.author.username) }}">{{ article.author.name }}</a>
+                                    <span class="float-right">
                                 <small data-toggle="tooltip" data-placement="top"
                                        data-timestamp="{{ article.timestamp }}" data-delay="500">
                                     {{ moment(article.timestamp).fromNow(refresh=True) }}
                                 </small>
                             </span>
-                            </div>
-                            <div class="card-body">
-                                <div class="">
-                                    <a class="thumbnail" href="{{ url_for('.show_article', article_id=article.id) }}"
-                                       target="_blank">
-                                        <h3 align="left">{{ article.title }}</h3>
-                                    </a>
-                                    <div id="main_text">
-                                        {{ article.main_text|striptags|truncate }}
-                                        <small><a
-                                                href="{{ url_for('.show_article', article_id=article.id) }}">更多</a></small>
+                                </div>
+                                <div class="card-body">
+                                    <div class="">
+                                        <a class="thumbnail"
+                                           href="{{ url_for('.show_article', article_id=article.id) }}"
+                                           target="_blank">
+                                            <h3 align="left" >{{ article.title }} <span style="font-size: 18px" class="oi oi-pin"></span></h3>
+
+                                        </a>
+
+                                        <div id="main_text">
+                                            {{ article.main_text|striptags|truncate }}
+                                            <small><a
+                                                    href="{{ url_for('.show_article', article_id=article.id) }}">更多</a></small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <span class="oi oi-star"></span>
+                                    <span id="collectors-count-{{ article.id }}"
+                                          data-href="{{ url_for('ajax.article_collectors_count', article_id=article.id) }}">
+                                    {{ article.collectors|length }}
+                                </span>
+                                    <span class="oi oi-comment-square"></span> {{ article.comments|length }}
+                                    <div class="float-right">
+                                        {% if current_user.is_authenticated %}
+                                            <button class="{% if not current_user.article_is_collecting(article) %}hide{% endif %}
+                                     btn btn-outline-secondary btn-sm uncollect-btn"
+                                                    data-href="{{ url_for('ajax.article_uncollect', article_id=article.id) }}"
+                                                    data-id="{{ article.id }}">
+                                                <span class="oi oi-x"></span> 取消收藏
+                                            </button>
+                                            <button class="{% if current_user.article_is_collecting(article) %}hide{% endif %}
+                                     btn btn-outline-primary btn-sm collect-btn"
+                                                    data-href="{{ url_for('main.art_collect', article_id=article.id) }}"
+                                                    data-id="{{ article.id }}">
+                                                <span class="oi oi-star"></span> 收藏
+                                            </button>
+                                        {% else %}
+                                            <form class="inline" method="post"
+                                                  action="{{ url_for('main.collect', article_id=article.id) }}">
+                                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                                <button type="submit" class="btn btn-outline-primary btn-sm">
+                                                    <span class="oi oi-star"></span> 收藏
+                                                </button>
+                                            </form>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
-                            <div class="card-footer">
-                                <span class="oi oi-star"></span>
-                                <span id="collectors-count-{{ article.id }}"
-                                      data-href="{{ url_for('ajax.article_collectors_count', article_id=article.id) }}">
+                        {% endif %}
+                    {% endfor %}
+                    {% for article in articles %}
+                        {% if not article.pin %}
+                            <div class="card mb-3 w-100 bg-light">
+                                <div class="card-header">
+                                    <a class="dead-link"
+                                       href="{{ url_for('user.show_score', username=article.author.username) }}">
+                                        <img class="rounded img-fluid avatar-s profile-popover"
+                                             data-href="{{ url_for('ajax.get_profile', user_id=article.author.id) }}"
+                                             src="{{ url_for('main.get_avatar', filename=article.author.avatar_m) }}">
+                                    </a>
+                                    <a class="profile-popover trend-card-avatar"
+                                       data-href="{{ url_for('ajax.get_profile', user_id=article.author.id) }}"
+                                       href="{{ url_for('user.show_score', username=article.author.username) }}">{{ article.author.name }}</a>
+                                    <span class="float-right">
+                                <small data-toggle="tooltip" data-placement="top"
+                                       data-timestamp="{{ article.timestamp }}" data-delay="500">
+                                    {{ moment(article.timestamp).fromNow(refresh=True) }}
+                                </small>
+                            </span>
+                                </div>
+                                <div class="card-body">
+                                    <div class="">
+                                        <a class="thumbnail"
+                                           href="{{ url_for('.show_article', article_id=article.id) }}"
+                                           target="_blank">
+                                            <h3 align="left">{{ article.title }}</h3>
+                                        </a>
+                                        <div id="main_text">
+                                            {{ article.main_text|striptags|truncate }}
+                                            <small><a
+                                                    href="{{ url_for('.show_article', article_id=article.id) }}">更多</a></small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <span class="oi oi-star"></span>
+                                    <span id="collectors-count-{{ article.id }}"
+                                          data-href="{{ url_for('ajax.article_collectors_count', article_id=article.id) }}">
                                     {{ article.collectors|length }}
                                 </span>
-                                <span class="oi oi-comment-square"></span> {{ article.comments|length }}
-                                <div class="float-right">
-                                    {% if current_user.is_authenticated %}
-                                        <button class="{% if not current_user.article_is_collecting(article) %}hide{% endif %}
+                                    <span class="oi oi-comment-square"></span> {{ article.comments|length }}
+                                    <div class="float-right">
+                                        {% if current_user.is_authenticated %}
+                                            <button class="{% if not current_user.article_is_collecting(article) %}hide{% endif %}
                                      btn btn-outline-secondary btn-sm uncollect-btn"
-                                                data-href="{{ url_for('ajax.article_uncollect', article_id=article.id) }}"
-                                                data-id="{{ article.id }}">
-                                            <span class="oi oi-x"></span> 取消收藏
-                                        </button>
-                                        <button class="{% if current_user.article_is_collecting(article) %}hide{% endif %}
+                                                    data-href="{{ url_for('ajax.article_uncollect', article_id=article.id) }}"
+                                                    data-id="{{ article.id }}">
+                                                <span class="oi oi-x"></span> 取消收藏
+                                            </button>
+                                            <button class="{% if current_user.article_is_collecting(article) %}hide{% endif %}
                                      btn btn-outline-primary btn-sm collect-btn"
-                                                data-href="{{ url_for('main.art_collect', article_id=article.id) }}"
-                                                data-id="{{ article.id }}">
-                                            <span class="oi oi-star"></span> 收藏
-                                        </button>
-                                    {% else %}
-                                        <form class="inline" method="post"
-                                              action="{{ url_for('main.collect', article_id=article.id) }}">
-                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                            <button type="submit" class="btn btn-outline-primary btn-sm">
+                                                    data-href="{{ url_for('main.art_collect', article_id=article.id) }}"
+                                                    data-id="{{ article.id }}">
                                                 <span class="oi oi-star"></span> 收藏
                                             </button>
-                                        </form>
-                                    {% endif %}
+                                        {% else %}
+                                            <form class="inline" method="post"
+                                                  action="{{ url_for('main.collect', article_id=article.id) }}">
+                                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                                <button type="submit" class="btn btn-outline-primary btn-sm">
+                                                    <span class="oi oi-star"></span> 收藏
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        {% endif %}
                     {% endfor %}
                     {{ render_pagination(pagination_article, align='center') }}
                 {% else %}

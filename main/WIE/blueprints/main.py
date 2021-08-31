@@ -354,6 +354,36 @@ def art_uncollect(article_id):
     return redirect(url_for('.show_article', article_id=article_id))
 
 
+@main_bp.route('/pin/<int:article_id>', methods=['POST'])
+@login_required
+@permission_required('COLLECT')
+def pin(article_id):
+    article = Article.query.get_or_404(article_id)
+    # if current_user.article_is_collecting(article):
+    #     flash('Already collected.', 'info')
+    #     return redirect(url_for('.show_article', article_id=article_id))
+
+    article.pin = True
+    db.session.commit()
+    flash('置顶成功.', 'success')
+
+    return redirect(url_for('.show_article', article_id=article_id))
+
+
+@main_bp.route('/unpin/<int:article_id>', methods=['POST'])
+@login_required
+def unpin(article_id):
+    article = Article.query.get_or_404(article_id)
+    # if not current_user.article_is_collecting(article):
+    #     flash('Not collect yet.', 'info')
+    #     return redirect(url_for('.show_article', article_id=article_id))
+
+    article.pin = False
+    db.session.commit()
+    flash('取消置顶成功.', 'info')
+    return redirect(url_for('.show_article', article_id=article_id))
+
+
 @main_bp.route('/report/comment/<int:comment_id>', methods=['POST'])
 @login_required
 def report_comment(comment_id):

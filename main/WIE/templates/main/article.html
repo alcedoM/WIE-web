@@ -8,15 +8,30 @@
     <div class="row">
         <div class="col-md-8">
             <div class="article">
-                <h1>{{article.title}}</h1>
-                <div>{{article.main_text|safe}}</div>
+                <h1>{{ article.title }}</h1>
+                <div>{{ article.main_text|safe }}</div>
             </div>
 
             <a class="btn btn-primary btn-sm text-white" data-toggle="modal" data-target="#share-modal">分享</a>
             {% if current_user == article.author or current_user.can('MODERATE') %}
                 <a class="btn btn-danger btn-sm text-white" data-toggle="modal" data-target="#confirm-delete"
                    data-href="{{ url_for('.delete_article', article_id=article.id) }}">删除</a>
+                <div style="display: inline-block">
+                    <button class="{% if not article.pin %}hide{% endif %}
+                                     btn btn-outline-secondary btn-sm uncollect-btn"
+                            data-href="{{ url_for('main.unpin', article_id=article.id) }}"
+                            data-id="{{ article.id }}">
+                        <span class="oi oi-pin"></span> 取消置顶
+                    </button>
+                    <button class="{% if article.pin %}hide{% endif %}
+                                     btn btn-outline-primary btn-sm collect-btn"
+                            data-href="{{ url_for('main.pin', article_id=article.id) }}"
+                            data-id="{{ article.id }}">
+                        <span class="oi oi-pin"></span> 置顶该文章
+                    </button>
+                </div>
             {% endif %}
+
             <p class="text-muted float-right small">
                 <span class="oi oi-clock"></span> 发表于 {{ moment(article.timestamp).format('LL') }}
             </p>
@@ -38,7 +53,8 @@
                     </button>
                 </div>
                 <div class="modal-body w-100">
-                    <input class="form-control" value="{{ url_for('.show_article', article_id=article.id, _external=True) }}"
+                    <input class="form-control"
+                           value="{{ url_for('.show_article', article_id=article.id, _external=True) }}"
                            readonly>
                 </div>
             </div>
