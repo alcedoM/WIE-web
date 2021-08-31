@@ -40,7 +40,7 @@
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <button type="submit" class="btn btn-primary btn-sm">关注</button>
                     {% if current_user.is_followed_by(user) %}
-                        <p class="badge badge-light">关注了你</p>
+                        <p class="badge badge-light">ta关注了你</p>
                     {% endif %}
                 </form>
             {% endif %}

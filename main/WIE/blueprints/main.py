@@ -303,11 +303,11 @@ def article_next(article_id):
 def collect(photo_id):
     photo = Photo.query.get_or_404(photo_id)
     if current_user.is_collecting(photo):
-        flash('Already collected.', 'info')
+        flash('已经收藏.', 'info')
         return redirect(url_for('.show_photo', photo_id=photo_id))
 
     current_user.collect(photo)
-    flash('Photo collected.', 'success')
+    flash('收藏成功.', 'success')
     if current_user != photo.author and photo.author.receive_collect_notification:
         push_collect_notification(collector=current_user, photo_id=photo_id, receiver=photo.author)
     return redirect(url_for('.show_photo', photo_id=photo_id))
@@ -318,11 +318,11 @@ def collect(photo_id):
 def uncollect(photo_id):
     photo = Photo.query.get_or_404(photo_id)
     if not current_user.is_collecting(photo):
-        flash('Not collect yet.', 'info')
+        flash('还没收藏', 'info')
         return redirect(url_for('.show_photo', photo_id=photo_id))
 
     current_user.uncollect(photo)
-    flash('Photo uncollected.', 'info')
+    flash('取消成功.', 'info')
     return redirect(url_for('.show_photo', photo_id=photo_id))
 
 
@@ -332,7 +332,7 @@ def uncollect(photo_id):
 def art_collect(article_id):
     article = Article.query.get_or_404(article_id)
     if current_user.article_is_collecting(article):
-        flash('Already collected.', 'info')
+        flash('已经收藏.', 'info')
         return redirect(url_for('.show_article', article_id=article_id))
 
     current_user.article_collect(article)
@@ -346,11 +346,11 @@ def art_collect(article_id):
 def art_uncollect(article_id):
     article = Article.query.get_or_404(article_id)
     if not current_user.article_is_collecting(article):
-        flash('Not collect yet.', 'info')
+        flash('还没收藏.', 'info')
         return redirect(url_for('.show_article', article_id=article_id))
 
     current_user.article_uncollect(article)
-    flash('Photo uncollected.', 'info')
+    flash('取消成功.', 'info')
     return redirect(url_for('.show_article', article_id=article_id))
 
 
@@ -390,7 +390,7 @@ def report_comment(comment_id):
     comment = Comment.query.get_or_404(comment_id)
     comment.flag += 1
     db.session.commit()
-    flash('Comment reported.', 'success')
+    flash('举报成功.', 'success')
     return redirect(url_for('.show_photo', photo_id=comment.photo_id))
 
 
@@ -400,7 +400,7 @@ def report_art_comment(comment_id):
     comment = Comment.query.get_or_404(comment_id)
     comment.flag += 1
     db.session.commit()
-    flash('Comment reported.', 'success')
+    flash('举报成功', 'success')
     return redirect(url_for('.show_article', article_id=comment.article_id))
 
 
@@ -410,7 +410,7 @@ def report_photo(photo_id):
     photo = Photo.query.get_or_404(photo_id)
     photo.flag += 1
     db.session.commit()
-    flash('Photo reported.', 'success')
+    flash('举报成功.', 'success')
     return redirect(url_for('.show_photo', photo_id=photo.id))
 
 
@@ -445,7 +445,7 @@ def edit_description(photo_id):
     if form.validate_on_submit():
         photo.description = form.description.data
         db.session.commit()
-        flash('Description updated.', 'success')
+        flash('描述更新成功', 'success')
 
     flash_errors(form)
     return redirect(url_for('.show_photo', photo_id=photo_id))
@@ -470,7 +470,7 @@ def new_comment(photo_id):
                 push_comment_notification(photo_id=photo.id, receiver=comment.replied.author)
         db.session.add(comment)
         db.session.commit()
-        flash('Comment published.', 'success')
+        flash('发表成功.', 'success')
 
         if current_user != photo.author and photo.author.receive_comment_notification:
             push_comment_notification(photo_id, receiver=photo.author, page=page)
@@ -498,7 +498,7 @@ def new_article_comment(article_id):
                 push_art_comment_notification(article_id=article.id, receiver=comment.replied.author)
         db.session.add(comment)
         db.session.commit()
-        flash('Comment published.', 'success')
+        flash('发表成功.', 'success')
 
         if current_user != article.author and article.author.receive_comment_notification:
             push_art_comment_notification(article_id, receiver=article.author, page=page)
@@ -525,7 +525,7 @@ def new_tag(photo_id):
             if tag not in photo.tags:
                 photo.tags.append(tag)
                 db.session.commit()
-        flash('Tag added.', 'success')
+        flash('添加成功.', 'success')
 
     flash_errors(form)
     return redirect(url_for('.show_photo', photo_id=photo_id))
@@ -549,7 +549,7 @@ def new_art_tag(article_id):
             if tag not in article.tags:
                 article.tags.append(tag)
                 db.session.commit()
-        flash('Tag added.', 'success')
+        flash('添加成功', 'success')
 
     flash_errors(form)
     return redirect(url_for('.show_article', article_id=article_id))
@@ -564,10 +564,10 @@ def set_comment(photo_id):
 
     if photo.can_comment:
         photo.can_comment = False
-        flash('Comment disabled', 'info')
+        flash('评论区关闭', 'info')
     else:
         photo.can_comment = True
-        flash('Comment enabled.', 'info')
+        flash('评论区开启.', 'info')
     db.session.commit()
     return redirect(url_for('.show_photo', photo_id=photo_id))
 
@@ -591,10 +591,10 @@ def set_article_comment(article_id):
 
     if article.can_comment:
         article.can_comment = False
-        flash('Comment disabled', 'info')
+        flash('评论区关闭', 'info')
     else:
         article.can_comment = True
-        flash('Comment enabled.', 'info')
+        flash('评论区开启.', 'info')
     db.session.commit()
     return redirect(url_for('.show_article', article_id=article_id))
 
@@ -618,7 +618,7 @@ def delete_photo(photo_id):
 
     db.session.delete(photo)
     db.session.commit()
-    flash('Photo deleted.', 'info')
+    flash('删除成功.', 'info')
 
     photo_n = Photo.query.with_parent(photo.author).filter(Photo.id < photo_id).order_by(Photo.id.desc()).first()
     if photo_n is None:
@@ -638,7 +638,7 @@ def delete_article(article_id):
 
     db.session.delete(article)
     db.session.commit()
-    flash('article deleted.', 'info')
+    flash('删除成功.', 'info')
     return redirect(url_for('main.index'))
 
 
@@ -651,7 +651,7 @@ def delete_comment(comment_id):
         abort(403)
     db.session.delete(comment)
     db.session.commit()
-    flash('Comment deleted.', 'info')
+    flash('删除成功.', 'info')
     return redirect(url_for('.show_photo', photo_id=comment.photo_id))
 
 
@@ -664,7 +664,7 @@ def delete_article_comment(comment_id):
         abort(403)
     db.session.delete(comment)
     db.session.commit()
-    flash('Comment deleted.', 'info')
+    flash('删除成功.', 'info')
     return redirect(url_for('.show_article', article_id=comment.article_id))
 
 
@@ -714,7 +714,7 @@ def delete_tag(photo_id, tag_id):
         db.session.delete(tag)
         db.session.commit()
 
-    flash('Tag deleted.', 'info')
+    flash('删除成功.', 'info')
     return redirect(url_for('.show_photo', photo_id=photo_id))
 
 
@@ -732,5 +732,5 @@ def delete_art_tag(article_id, tag_id):
         db.session.delete(tag)
         db.session.commit()
 
-    flash('Tag deleted.', 'info')
+    flash('删除成功', 'info')
     return redirect(url_for('.show_article', article_id=article_id))

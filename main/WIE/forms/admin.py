@@ -19,9 +19,9 @@ class EditProfileAdminForm(EditProfileForm):
     ds_score = IntegerField('数据科学分数')
     web_score = IntegerField('WEB分数')
     hw_score = IntegerField('硬件分数')
-    active = BooleanField('Active')
-    confirmed = BooleanField('Confirmed')
-    submit = SubmitField()
+    active = BooleanField('激活')
+    confirmed = BooleanField('确认')
+    submit = SubmitField('提交')
 
 
     def __init__(self, user, *args, **kwargs):

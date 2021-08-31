@@ -42,7 +42,7 @@ def index():
 def reset_password(user_id):
     user = User.query.get_or_404(user_id)
     if user.role.name in ['Administrator', 'Moderator']:
-        flash('Permission denied.', 'warning')
+        flash('权限不足.', 'warning')
     else:
         user.reset_password()
         flash('重置成功.', 'info')
@@ -97,10 +97,10 @@ def edit_profile_admin(user_id):
 def block_user(user_id):
     user = User.query.get_or_404(user_id)
     if user.role.name in ['Administrator', 'Moderator']:
-        flash('Permission denied.', 'warning')
+        flash('权限不足.', 'warning')
     else:
         user.block()
-        flash('Account blocked.', 'info')
+        flash('封禁成功.', 'info')
     return redirect_back()
 
 
@@ -110,7 +110,7 @@ def block_user(user_id):
 def unblock_user(user_id):
     user = User.query.get_or_404(user_id)
     user.unblock()
-    flash('Block canceled.', 'info')
+    flash('封禁取消.', 'info')
     return redirect_back()
 
 
@@ -120,7 +120,7 @@ def unblock_user(user_id):
 def lock_user(user_id):
     user = User.query.get_or_404(user_id)
     if user.role.name in ['Administrator', 'Moderator']:
-        flash('Permission denied.', 'warning')
+        flash('权限不足.', 'warning')
     else:
         user.lock()
         flash('账号已锁定.', 'info')

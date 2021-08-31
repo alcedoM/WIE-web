@@ -47,13 +47,13 @@
                     {% if user.active %}
                         <form class="inline" action="{{ url_for('admin.block_user', user_id=user.id) }}" method="post">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                            <input type="submit" class="btn btn-warning btn-sm" value="Block">
+                            <input type="submit" class="btn btn-warning btn-sm" value="封禁">
                         </form>
                     {% else %}
                         <form class="inline" action="{{ url_for('admin.unblock_user', user_id=user.id) }}"
                               method="post">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                            <input type="submit" class="btn btn-secondary btn-sm" value="Unblock">
+                            <input type="submit" class="btn btn-secondary btn-sm" value="解封">
                         </form>
                     {% endif %}
                     <a class="btn btn-light btn-sm" href="mailto:{{ user.email }}">发送邮件</a>

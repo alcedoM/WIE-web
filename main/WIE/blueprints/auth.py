@@ -31,7 +31,7 @@ def login():
                 flash('登录成功.', 'info')
                 return redirect_back()
             else:
-                flash('你的账号被block了.', 'warning')
+                flash('你的账号被封禁了.', 'warning')
                 return redirect(url_for('main.index'))
         flash('错误的邮箱或密码', 'warning')
     return render_template('auth/login.html', form=form)

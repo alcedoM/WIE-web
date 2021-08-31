@@ -89,11 +89,11 @@ def show_art_collections(username):
 def follow(username):
     user = User.query.filter_by(username=username).first_or_404()
     if current_user.is_following(user):
-        flash('Already followed.', 'info')
+        flash('已经关注.', 'info')
         return redirect(url_for('.index', username=username))
 
     current_user.follow(user)
-    flash('User followed.', 'success')
+    flash('关注成功', 'success')
     if user.receive_follow_notification:
         push_follow_notification(follower=current_user, receiver=user)
     return redirect_back()
@@ -108,7 +108,7 @@ def unfollow(username):
         return redirect(url_for('.index', username=username))
 
     current_user.unfollow(user)
-    flash('User unfollowed.', 'info')
+    flash('取关成功', 'info')
     return redirect_back()
 
 
