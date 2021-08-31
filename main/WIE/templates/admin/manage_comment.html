@@ -36,7 +36,7 @@
             <tr>
                 <th>评论内容</th>
                 <th>发布者</th>
-                <th>图片</th>
+                <th>帖子</th>
                 <th>被举报情况</th>
                 <th>日期</th>
                 <th>处理</th>
@@ -49,7 +49,12 @@
                         <a href="{{ url_for('user.index', username=comment.author.username) }}">{{ comment.author.name }}</a>
                     </td>
                     <td>
-                        <a href="{{ url_for('main.show_photo', photo_id=comment.photo.id) }}">图片 {{ comment.photo.id }}</a>
+                        {% if comment.photo %}
+                            <a href="{{ url_for('main.show_photo', photo_id=comment.photo.id) }}">图片 {{ comment.photo.id }}</a>
+                        {% endif %}
+                        {% if comment.article %}
+                            <a href="{{ url_for('main.show_article', article_id=comment.article.id) }}">文章 {{ comment.article.id }}</a>
+                        {% endif %}
                     </td>
                     <td>{{ comment.flag }}</td>
                     <td>{{ moment(comment.timestamp).format('LL') }}</td>
