@@ -7,9 +7,9 @@
             </a>
             <div class="sidebar-nav-name">
                 <h6 class="card-title"><a
-                        href="{{ url_for('user.show_score', username=current_user.username) }}">{{ current_user.name }}
+                        href="{{ url_for('user.show_score', username=current_user.username) }}">{{ current_user.username }}
                 </a></h6>
-                <p class="card-subtitle mb-2 text-muted">{{ current_user.username }}</p>
+                <p class="card-subtitle mb-2 text-muted">{{ current_user.name }}</p>
             </div>
         </div>
         <a class="card-link" href="{{ url_for('user.show_score', username=current_user.username) }}">
@@ -24,8 +24,8 @@
     <div class="card-header">热门标签</div>
     <div class="list-group">
         {% for tag in tags %}
-            <a class="list-group-item" href="{{ url_for('.show_art_tag', tag_id=tag.id) }}">{{ tag.name }}
-                <span class="badge badge-pill">{{ tag.articles|length }}</span>
+            <a class="list-group-item" href="{{ url_for('.show_tag', tag_id=tag.id) }}">{{ tag.name }}
+                <span class="badge badge-pill">{{ tag.photos|length }}</span>
             </a>
         {% endfor %}
     </div>

@@ -31,12 +31,14 @@ def index():
             .order_by(Article.timestamp.desc()) \
             .paginate(page, per_page)
         articles = pagination_article.items
+        new_articles = Article.query.order_by(Article.timestamp.desc()).limit(5)
+
     else:
         pagination_article = None
         articles = None
     tags = Tag.query.join(Tag.articles).group_by(Tag.id).order_by(func.count(Article.id).desc()).limit(10)
     return render_template('main/index.html', pagination_article=pagination_article, articles=articles, tags=tags,
-                           Collect=Collect)
+                           Collect=Collect, new_articles=new_articles)
 
 
 @main_bp.route('/showpic')
@@ -45,8 +47,6 @@ def pic_list():
         page = request.args.get('page', 1, type=int)
         per_page = current_app.config['ALBUMY_PHOTO_PER_PAGE']
         pagination = Photo.query \
-            .join(Follow, Follow.followed_id == Photo.author_id) \
-            .filter(Follow.follower_id == current_user.id) \
             .order_by(Photo.timestamp.desc()) \
             .paginate(page, per_page)
         photos = pagination.items

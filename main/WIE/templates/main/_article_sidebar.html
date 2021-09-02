@@ -19,9 +19,9 @@
             </a>
             <div class="sidebar-profile">
                 <h6 class="card-title">
-                    <a href="{{ url_for('user.show_score', username=article.author.username) }}">{{ article.author.name }}</a>
+                    <a href="{{ url_for('user.show_score', username=article.author.username) }}">{{ article.author.username }}</a>
                 </h6>
-                <p class="card-subtitle mb-2 text-muted">{{ article.author.username }}</p>
+                <p class="card-subtitle mb-2 text-muted">{{ article.author.name }}</p>
                 {{ follow_area(article.author) }}
             </div>
         </div>
@@ -94,7 +94,7 @@
             </form>
         {% endif %}
         {% if article.collectors %}
-            <a href="{{ url_for('main.show_art_collectors', article_id=article.id) }}">被{{ article.collectors|length }}个人收藏</a>
+            被{{ article.collectors|length }}个人收藏
         {% endif %}
     </div>
 </div>
