@@ -31,14 +31,14 @@ def index():
             .order_by(Article.timestamp.desc()) \
             .paginate(page, per_page)
         articles = pagination_article.items
-        new_articles = Article.query.order_by(Article.timestamp.desc()).limit(5)
+        # new_articles = Article.query.order_by(Article.timestamp.desc()).limit(5)
 
     else:
         pagination_article = None
         articles = None
     tags = Tag.query.join(Tag.articles).group_by(Tag.id).order_by(func.count(Article.id).desc()).limit(10)
     return render_template('main/index.html', pagination_article=pagination_article, articles=articles, tags=tags,
-                           Collect=Collect, new_articles=new_articles)
+                           Collect=Collect)
 
 
 @main_bp.route('/showpic')

@@ -37,7 +37,6 @@ def create_app(config_name=None):
     register_errorhandlers(app)
     register_shell_context(app)
     register_template_context(app)
-
     return app
 
 

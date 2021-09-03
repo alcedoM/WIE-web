@@ -20,16 +20,16 @@
         </a>
     </div>
 </div>
-<div class="card bg-light mb-3 w-100">
-    <div class="card-header">最新文章</div>
-    <div class="list-group">
-        {% for article in new_articles %}
-            <a class="list-group-item" href="{{ url_for('.show_article', article_id=article.id) }}" target="_blank">
-                <span align="left" >{{ article.title }} </span>
-            </a>
-        {% endfor %}
-    </div>
-</div>
+{#<div class="card bg-light mb-3 w-100">#}
+{#    <div class="card-header">最新文章</div>#}
+{#    <div class="list-group">#}
+{#        {% for article in new_articles %}#}
+{#            <a class="list-group-item" href="{{ url_for('.show_article', article_id=article.id) }}" target="_blank">#}
+{#                <span align="left" >{{ article.title }} </span>#}
+{#            </a>#}
+{#        {% endfor %}#}
+{#    </div>#}
+{#</div>#}
 <div class="card bg-light mb-3 w-100">
     <div class="card-header">热门标签</div>
     <div class="list-group">
